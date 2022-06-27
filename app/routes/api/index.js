@@ -12,7 +12,7 @@ const IndexRouter = require("express").Router();
 /**
  * @swagger
  * /:
- *  get:
+ *  post:
  *      summary: index of routes 
  *      tags: [IndexPage]
  *      description : get all need data for index page
@@ -29,7 +29,7 @@ const IndexRouter = require("express").Router();
  *          404: 
  *              description: not Found
  */
-IndexRouter.get("/", HomeController.indexPage);
+IndexRouter.post("/", HomeController.indexPage);
 module.exports = {
     IndexRouter
 }

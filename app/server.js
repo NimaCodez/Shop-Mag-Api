@@ -19,18 +19,19 @@ module.exports = class Application {
         this.CreateRoutes();
         this.ErrorHandler();
     }
+    
     ConfigApplication() {
         this.#app.use(morgan("dev"))
         this.#app.use(express.json())
         this.#app.use(express.urlencoded({ extended: true }));
         this.#app.use(express.static(path.join(__dirname, '..', "public")));
-        this.#app.use("/api-doc", swaggerUI.serve, swaggerUI.setup(swaggerJsDoc({
+        this.#app.use("/swagger", swaggerUI.serve)
+        this.#app.get("/swagger", swaggerUI.setup(swaggerJsDoc({
             swaggerDefinition: {
                 info: {
                     title: "Shop-Mag Api",
                     version: "2.0.0",
-                    description:
-                        "A Shop Api with Blog Section",
+                    description: "A Shop Api with Blog Section",
                     contact: {
                         name: "Nima",
                         url: "https://freerealapi.com",
@@ -46,12 +47,14 @@ module.exports = class Application {
             apis: ["./app/routes/**/*.js"],
         })))
     }
+
     CreateServer() {
         const http = require('http');
         http.createServer(this.#app).listen(this.#PORT, () => {
             console.log('server listening on port >' + this.#PORT);
         });
     }
+
     ConnectToMongoDb() {
         mongoose.connect(this.#DB_URL, (err) => {
             if (!err) return console.log("Established connection To MongoDb")
@@ -69,9 +72,11 @@ module.exports = class Application {
         })
         
     }
+
     CreateRoutes() {
         this.#app.use(Router);
     }
+
     ErrorHandler() {
         this.#app.use((req, res, next) => {
             next(createError.NotFound("Route not found 🔍"))
