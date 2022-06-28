@@ -1,18 +1,18 @@
 const createError = require('http-errors');
 const { UserModel } = require('../../../../models/user.model');
 const { EXPIRES_IN, USER_ROLE } = require('../../../../utils/constants');
-const { GenerateRandomNumber } = require('../../../../utils/functions');
-const { AuthSchema } = require('../../../validators/user/auth.schema');
+const { GenerateRandomNumber, SignAccessToken } = require('../../../../utils/functions');
+const { GetOtpSchema, CheckOtpSchema } = require('../../../validators/user/auth.schema');
 const Controller = require('../../controller');
 
 class UserAuthController extends Controller {
-    async Login(req, res, next) {
+    async GetOtp(req, res, next) {
         try {
-            await AuthSchema.validateAsync(req.body);
+            await GetOtpSchema.validateAsync(req.body);
             const { mobile } = req.body;
             const code = GenerateRandomNumber()
             const result = await this.saveUser(mobile, code);
-            if(!result) throw createError.Unauthorized("You were not logged In")
+            if(!result) throw createError.Unauthorized("You were not logged In 🐢")
             return res.status(200).json({
                 status: 200,
                 success: true,
@@ -24,8 +24,25 @@ class UserAuthController extends Controller {
             next(createError.BadRequest(error.message));
         }
     }
+    async CheckOtp(req, res, next) {
+        try {
+            await CheckOtpSchema.validateAsync(req.body);
+            const { mobile, code } = req.body;
+            const user = await UserModel.findOne({mobile});
+            if(!user) throw createError.NotFound("Your Account was not Found 🔍");
+            if(user.otp.code != code) throw createError.Unauthorized("Wrong Code! 🐢");
+            const now = Date.now();
+            if(Number(user.otp.expiresIn) < now) throw createError.Unauthorized("Code has been expired 🐢");
+            const token = await SignAccessToken(user._id);
+            return res.json({
+                accessToken: token,
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
     async CheckUserExistence(mobile) {
-        const result = UserModel.findOne({mobile})
+        const result = await UserModel.findOne({mobile})
         return !!result
     }
     async saveUser(mobile, code) {
@@ -33,7 +50,7 @@ class UserAuthController extends Controller {
             code,
             expiresIn: EXPIRES_IN
         }
-        const result = this.CheckUserExistence(mobile)
+        const result = await this.CheckUserExistence(mobile)
         if(result) {
             return (await this.UpdateUser(mobile, {otp}))
         }

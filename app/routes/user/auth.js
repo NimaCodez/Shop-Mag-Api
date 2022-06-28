@@ -10,25 +10,58 @@ const AuthRouter = require("express").Router();
  */
 /**
  * @swagger
- *  /user/login:
+ *  /user/getotp:
  *      post:
- *          summary: index of routes 
+ *          summary: Generates Otp For User 
  *          tags: [AuthRoutes]
  *          description : Generate Otp for mobiles
  *          parameters:
  *              -   in: formData
  *                  name: mobile
  *                  example: 09304175210
+ *                  required: true
+ *                  type: string
  *          responses:
  *              200:
  *                  description: success
- *                  schema: 
- *                      type: string
- *                      example : Index Page Store
  *              404: 
  *                  description: not Found
  */
-AuthRouter.post("/login", UserAuthController.Login)
+AuthRouter.post("/getotp", UserAuthController.GetOtp)
+/**
+ * @swagger
+ *  /user/check-otp:
+ *      post:
+ *          summary: Otp Checking route
+ *          tags: [AuthRoutes]
+ *          description: Checks User's Otp Code and Phone Number
+ *          parameters:
+ *              -   in: formData
+ *                  name: mobile
+ *                  description: fa-IRI phone number
+ *                  example: 09304175210
+ *                  required: true
+ *                  type: string
+ * 
+ *              -   name: code
+ *                  example: 33412
+ *                  description: Code which is sms'ed
+ *                  required: true
+ *                  type: string
+ *                  in: formData
+ *          responses:
+ *              200:
+ *                  description: OK
+ *              400:
+ *                  description: Bad Request
+ *              404:
+ *                  description: Not found
+ *              401: 
+ *                  description: UnAuthorized
+ *              500:
+ *                  description: Internal Server Error
+ */
+AuthRouter.post("/check-otp", UserAuthController.CheckOtp)
 
 module.exports = {
     AuthRouter
