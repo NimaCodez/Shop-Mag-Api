@@ -62,6 +62,31 @@ AuthRouter.post("/getotp", UserAuthController.GetOtp)
  *                  description: Internal Server Error
  */
 AuthRouter.post("/check-otp", UserAuthController.CheckOtp)
+/**
+ * @swagger
+ *  /user/refresh-token:
+ *      post:
+ *          summary: Refresh Token for user
+ *          tags: [AuthRoutes]
+ *          description: Refresh token generator for user to do Payment and ...
+ *          parameters:
+ *              -   in: formData
+ *                  name: refreshToken
+ *                  type: string
+ *                  required: true
+ *          responses: 
+ *              200:
+ *                  description: OK
+ *              400:
+ *                  description: Bad Request
+ *              404:
+ *                  description: Not found
+ *              401: 
+ *                  description: UnAuthorized
+ *              500:
+ *                  description: Internal Server Error
+ */
+AuthRouter.post("/refresh-token", UserAuthController.refreshToken)
 
 module.exports = {
     AuthRouter

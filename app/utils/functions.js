@@ -1,6 +1,6 @@
 const JWT = require("jsonwebtoken");
 const { UserModel } = require("../models/user.model");
-const { SECRET_KEY } = require("./constants");
+const { JWT_TOKEN_SECRET_KEY, REFRESH_TOKEN_SECRET_KEY } = require("./constants");
 const createError = require("http-errors");
 
 function GenerateRandomNumber() {
@@ -9,22 +9,31 @@ function GenerateRandomNumber() {
 
 async function SignAccessToken(user) {
 
-    // const user = await UserModel.findOne({ _id: userId });
-
-    const payload = {
-        mobile: user.mobile,
-        userID: user._id
-    };
+    const { mobile } = user;
 
     const options = {
         expiresIn: "1h"
     };
 
-    return JWT.sign(payload, SECRET_KEY, options)
+    return JWT.sign({mobile}, JWT_TOKEN_SECRET_KEY, options)
+
+}
+
+async function SignRefreshToken(userId) {
+
+    const user = await UserModel.findById(userId)
+    const mobile = user.mobile;
+
+    const options = {
+        expiresIn: "1y"
+    };
+
+    return JWT.sign({mobile}, REFRESH_TOKEN_SECRET_KEY, options)
 
 }
 
 module.exports = {
     GenerateRandomNumber,
     SignAccessToken,
+    SignRefreshToken,
 }

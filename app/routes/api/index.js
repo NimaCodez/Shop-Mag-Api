@@ -1,5 +1,6 @@
 
 const { HomeController } = require("../../http/controllers/api/home.controller");
+const { verifyAccessToken } = require("../../http/middlewares/verifyAccessToken");
 const IndexRouter = require("express").Router();
 
 /**
@@ -12,7 +13,7 @@ const IndexRouter = require("express").Router();
 /**
  * @swagger
  * /:
- *  post:
+ *  get:
  *      summary: index of routes 
  *      tags: [IndexPage]
  *      description : get all need data for index page
@@ -29,7 +30,7 @@ const IndexRouter = require("express").Router();
  *          404: 
  *              description: not Found
  */
-IndexRouter.post("/", HomeController.indexPage);
+IndexRouter.get("/", verifyAccessToken, HomeController.indexPage);
 module.exports = {
     IndexRouter
 }

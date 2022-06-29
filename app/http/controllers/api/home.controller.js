@@ -1,11 +1,9 @@
-const { AuthSchema } = require("../../validators/user/auth.schema");
 const Controller = require("../controller");
 
 class HomeController extends Controller {
     async indexPage(req, res, next) {
         try {
-            const result = await AuthSchema.validateAsync(req.body);
-            return res.status(200).send("Hello")
+            return res.status(200).send("Index Page Store")
         } catch (error) {
             next(error);
         }
