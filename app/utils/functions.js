@@ -5,7 +5,7 @@ const createError = require("http-errors");
 const redisClient = require("./init_redis");
 
 function GenerateRandomNumber() {
-    return Math.floor((Math.random() * 10000) + 90000)
+    return Math.floor(Math.random()*90000) + 10000;
 }
 
 async function SignAccessToken(user) {
