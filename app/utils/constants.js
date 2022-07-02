@@ -10,7 +10,6 @@ const ROLES = {
     TEACHER: "TEACHER",
     SUPPLIER: "SUPPLIER",
 }
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2JpbGUiOiIwOTMwNDE3NTIxMCIsImlhdCI6MTY1NjQ5NjM2MywiZXhwIjoxNjU2NDk5OTYzfQ.DeGS4YC0GL-G7le1qZozx-pEvmm9rRccAefPNWaeoqM
 
 module.exports = {
     EXPIRES_IN,
