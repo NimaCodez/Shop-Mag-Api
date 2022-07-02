@@ -72,6 +72,10 @@ module.exports = class Application {
         })
     }
 
+    InitRedis() {
+        require("./utils/init_redis");
+    }
+
     CreateRoutes() {
         this.#app.use(Router);
     }
