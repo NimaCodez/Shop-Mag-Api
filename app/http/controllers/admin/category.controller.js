@@ -3,6 +3,7 @@ const createError = require("http-errors");
 
 const Controller = require("../controller");
 const { CreateCategoryValidation } = require("../../validators/admin/category.schema");
+const { MongoIdValidator } = require("../../validators/public");
 
 class CategoryController extends Controller {
     async AddCategory(req, res, next) {
@@ -10,9 +11,9 @@ class CategoryController extends Controller {
             await CreateCategoryValidation.validateAsync(req.body)
             const { title, parent } = req.body;
             const existCheck = await this.CheckCategoryExistence(title);
-            if (existCheck) throw { status: 400, success: false, message: "Category already exists! 🗿"}
+            if (existCheck) throw { status: 400, success: false, message: "Category already exists! 🗿" }
             const createResult = await CategoryModel.create({ title, parent })
-            if (!createResult) throw { status: createError.InternalServerError(), success: false, message: "Category was not created 🥲"}
+            if (!createResult) throw { status: createError.InternalServerError(), success: false, message: "Category was not created 🥲" }
             return res.status(201).json({
                 status: 201,
                 success: true,
@@ -24,52 +25,128 @@ class CategoryController extends Controller {
     }
 
     async CheckCategoryExistence(title) {
-        return !!await CategoryModel.findOne({title});
+        return !!await CategoryModel.findOne({ title });
     }
 
-    EditCategory(req, res, next) {
-        try {
+    async CheckCategoryExistenceById(ID) {
+        return !!await CategoryModel.findOne({ _id: ID });
+    }
 
+    async EditCategory(req, res, next) {
+        try {
+            await MongoIdValidator.validateAsync(req.params)
+            const { id } = req.params;
+            const data = {...req.body};
+            const findResult = await this.CheckCategoryExistenceById(id);
+            if (!findResult) throw { status: createError[404], success: false, message: "Category does not exist" }
+            const updateResult = await CategoryModel.updateOne({ _id: id }, { $set: data })
+            if (updateResult.modifiedCount == 0) throw { status: createError[400], success: false, message: "Nothing was updated" }
+            return res.status(200).json({
+                status: 200,
+                success: true,
+                message: "Category Edited Successfully! 🎉✨"
+            })
         } catch (error) {
             next(error);
         }
     }
 
-    RemoveCategory(req, res, next) {
+    async RemoveCategory(req, res, next) {
         try {
-
+            await MongoIdValidator.validateAsync(req.params);
+            const { id } = req.params;
+            const findResult = await this.CheckCategoryExistenceById(id);
+            if (!findResult) throw { status: createError[404], success: false, message: "Category does not exist" }
+            const deleteResult = await CategoryModel.deleteOne({ _id: id });
+            if (deleteResult.deletedCount == 0) throw { status: 500, success: false, message: "Category was not deleted from database" }
+            return res.status(200).json({
+                statius: 200,
+                success: true,
+                data: {
+                    message: "Category was successfully deleted 🎉✨"
+                }
+            })
         } catch (error) {
             next(error);
         }
     }
 
-    GetAllCategories(req, res, next) {
+    async GetAllCategories(req, res, next) {
         try {
-
+            const categories = await CategoryModel.aggregate([
+                {
+                    $lookup: {
+                        from: "categories",
+                        localField: "_id",
+                        foreignField: "parent",
+                        as: "children"
+                    }
+                },
+                {
+                    $project: {
+                        __v: 0,
+                        "children.__v": 0
+                    }
+                }
+            ])
+            return res.status(200).json({
+                status: 200,
+                success: true,
+                data: {
+                    categories
+                }
+            })
         } catch (error) {
             next(error);
         }
     }
 
-    GetCategoryById(req, res, next) {
+    async GetCategoryById(req, res, next) {
         try {
-
+            await MongoIdValidator.validateAsync(req.params);
+            const { id } = req.params;
+            const category = await CategoryModel.findOne({ _id: id });
+            if (!category) throw { status: createError[404], success: false, message: "No category was found" }
+            return res.stats(200).json({
+                status: 200,
+                success: true,
+                data: { category }
+            })
         } catch (error) {
             next(error);
         }
     }
 
-    GetAllParents(req, res, next) {
+    async GetAllParents(req, res, next) {
         try {
-
+            const parents = await CategoryModel.find({ parent: undefined }, { __v: 0 })
+            if (!parents) throw { status: createError[404], success: false, message: "No parent category was found" }
+            return res.status(200).json({
+                status: 200,
+                success: true,
+                data: {
+                    parents
+                }
+            })
         } catch (error) {
             next(error);
         }
     }
-    
-    GetChildrenOfParents(req, res, next) {
-        try {
 
+    async GetChildrenOfParents(req, res, next) {
+        try {
+            await MongoIdValidator.validateAsync(req.params);
+            const { id } = req.params;
+            const children = await CategoryModel.find({ parent: id }, { __v: 0 });
+            console.log(children);
+            if (!children) throw { status: 404, success: false, message: "No children Category found for this parent" }
+            return res.status(200).json({
+                status: 200,
+                success: true,
+                data: {
+                    children
+                }
+            })
         } catch (error) {
             next(error);
         }

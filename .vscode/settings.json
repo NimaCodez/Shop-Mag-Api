@@ -3,6 +3,7 @@
         "getotp",
         "madein",
         "middlewares",
-        "Nima"
+        "Nima",
+        "parentid"
     ]
 }
