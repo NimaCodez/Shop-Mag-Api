@@ -4,6 +4,7 @@ const createError = require("http-errors");
 const Controller = require("../controller");
 const { CreateCategoryValidation } = require("../../validators/admin/category.schema");
 const { MongoIdValidator } = require("../../validators/public");
+const { default: mongoose } = require("mongoose");
 
 class CategoryController extends Controller {
     async AddCategory(req, res, next) {
@@ -13,7 +14,7 @@ class CategoryController extends Controller {
             const existCheck = await this.CheckCategoryExistence(title);
             if (existCheck) throw { status: 400, success: false, message: "Category already exists! 🗿" }
             const createResult = await CategoryModel.create({ title, parent })
-            if (!createResult) throw { status: createError.InternalServerError(), success: false, message: "Category was not created 🥲" }
+            if (!createResult) throw createError.InternalServerError("Category was not created 🥲");
             return res.status(201).json({
                 status: 201,
                 success: true,
@@ -38,9 +39,9 @@ class CategoryController extends Controller {
             const { id } = req.params;
             const data = {...req.body};
             const findResult = await this.CheckCategoryExistenceById(id);
-            if (!findResult) throw { status: createError[404], success: false, message: "Category does not exist" }
+            if (!findResult) throw createError.NotFound("Category does not exist")
             const updateResult = await CategoryModel.updateOne({ _id: id }, { $set: data })
-            if (updateResult.modifiedCount == 0) throw { status: createError[400], success: false, message: "Nothing was updated" }
+            if (updateResult.modifiedCount == 0) throw createError.BadRequest("Nothing was updated")
             return res.status(200).json({
                 status: 200,
                 success: true,
@@ -56,7 +57,7 @@ class CategoryController extends Controller {
             await MongoIdValidator.validateAsync(req.params);
             const { id } = req.params;
             const findResult = await this.CheckCategoryExistenceById(id);
-            if (!findResult) throw { status: createError[404], success: false, message: "Category does not exist" }
+            if (!findResult) throw createError.NotFound("Category does not exist")
             const deleteResult = await CategoryModel.deleteOne({ _id: id });
             if (deleteResult.deletedCount == 0) throw { status: 500, success: false, message: "Category was not deleted from database" }
             return res.status(200).json({
@@ -75,10 +76,13 @@ class CategoryController extends Controller {
         try {
             const categories = await CategoryModel.aggregate([
                 {
-                    $lookup: {
+                    $graphLookup: {
                         from: "categories",
-                        localField: "_id",
-                        foreignField: "parent",
+                        startWith: "$_id",
+                        connectFromField: "_id",
+                        connectToField: "parent",
+                        maxDepth: 9,
+                        depthField: "depth",
                         as: "children"
                     }
                 },
@@ -106,7 +110,7 @@ class CategoryController extends Controller {
             await MongoIdValidator.validateAsync(req.params);
             const { id } = req.params;
             const category = await CategoryModel.findOne({ _id: id });
-            if (!category) throw { status: createError[404], success: false, message: "No category was found" }
+            if (!category) throw createError.NotFound("No category was found")
             return res.stats(200).json({
                 status: 200,
                 success: true,
@@ -120,7 +124,7 @@ class CategoryController extends Controller {
     async GetAllParents(req, res, next) {
         try {
             const parents = await CategoryModel.find({ parent: undefined }, { __v: 0 })
-            if (!parents) throw { status: createError[404], success: false, message: "No parent category was found" }
+            if (!parents) throw createError.NotFound("No parent category was found")
             return res.status(200).json({
                 status: 200,
                 success: true,
