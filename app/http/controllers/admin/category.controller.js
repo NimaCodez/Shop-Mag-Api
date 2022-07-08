@@ -8,6 +8,7 @@ const { default: mongoose } = require("mongoose");
 const { id } = require("@hapi/joi/lib/base");
 
 class CategoryController extends Controller {
+
     async AddCategory(req, res, next) {
         try {
             await CreateCategoryValidation.validateAsync(req.body)
@@ -81,10 +82,25 @@ class CategoryController extends Controller {
         try {
             await MongoIdValidator.validateAsync(req.params);
             const { id } = req.params;
-            const category = CategoryModel.aggregate([
+            const category = await CategoryModel.aggregate([
                 {
                     $match: {
-                        _id : id
+                        _id : mongoose.Types.ObjectId(id)
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "categories",
+                        localField: "_id",
+                        foreignField: "parent",
+                        as: "children"
+                    }
+                },
+                {
+                    $project: {
+                        __v: 0,
+                        "children.__v": 0,
+                        "children.parent": 0
                     }
                 }
             ])
@@ -135,6 +151,23 @@ class CategoryController extends Controller {
             })
         } catch (error) {
             next(error);
+        }
+    }
+
+    async GetAllCategoriesWithoutPopulate(req, res, next) {
+        try {
+            const categories = await CategoryModel.aggregate([
+                {$match: {}}, {$project: { __v: 0 }}
+            ])
+            return res.status(200).json({
+                status: 200,
+                success: true,
+                data: {
+                    categories
+                }
+            })
+        } catch (error) {
+            next(error)
         }
     }
 

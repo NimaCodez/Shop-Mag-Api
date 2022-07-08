@@ -16,7 +16,7 @@ CategorySchema.virtual("children", {
 })
 
 function AutoPopulate(next) {
-    this.populate([{ path: "children"}])
+    this.populate([{ path: "children", select: { __v: 0, id: 0 }}])
     next()
 }
 

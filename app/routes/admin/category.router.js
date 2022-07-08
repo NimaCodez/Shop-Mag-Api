@@ -3,50 +3,9 @@ const CategoryRouter = require("express").Router();
 
 /**
  * @swagger
- *  /admin/category/all:
- *      get:
- *          tags: [Admin-Panel]
- *          summary: Gets all the categories
- *          responses:
- *              201:
- *                  description: GET successfully
- */
- CategoryRouter.get("/all", CategoryController.GetAllCategories)
-
-/**
- * @swagger
- *  /admin/category/parents:
- *      get:
- *          tags: [Admin-Panel]
- *          summary: Gets all the parent categories
- *          responses:
- *              201:
- *                  description: GET successfully
- */
-CategoryRouter.get("/parents", CategoryController.GetAllParents)
-
-/**
- * @swagger
- *  /admin/category/children/{parent}:
- *      get:
- *          tags: [Admin-Panel]
- *          summary: Gets the child categories of a parent
- *          parameters:
- *              -   in: path
- *                  name: id
- *                  type: string
- *                  required: true
- *          responses:
- *              200:
- *                  description: GET success
- */
-CategoryRouter.get("/children/:id", CategoryController.GetChildrenOfParents)
-
-/**
- * @swagger
  *  /admin/category/add:
  *      post:
- *          tags: [Admin-Panel]
+ *          tags: [Category(Admin-Panel)]
  *          summary: Add a new category
  *          parameters:
  *              -   in: formData
@@ -67,7 +26,7 @@ CategoryRouter.post("/add", CategoryController.AddCategory)
  * @swagger
  *  /admin/category/edit/{id}:
  *      patch:
- *          tags: [Admin-Panel]
+ *          tags: [Category(Admin-Panel)]
  *          summary: Add a new category
  *          parameters:
  *              -   in: path
@@ -92,7 +51,7 @@ CategoryRouter.patch("/edit/:id", CategoryController.EditCategory)
  * @swagger
  *  /admin/category/remove/{id}:
  *      delete:
- *          tags: [Admin-Panel]
+ *          tags: [Category(Admin-Panel)]
  *          summary: Add a new category
  *          parameters:
  *              -   in: path
@@ -107,9 +66,62 @@ CategoryRouter.delete("/remove/:id", CategoryController.RemoveCategory)
 
 /**
  * @swagger
+ *  /admin/category/all:
+ *      get:
+ *          tags: [Category(Admin-Panel)]
+ *          summary: Gets all the categories
+ *          responses:
+ *              201:
+ *                  description: GET successfully
+ */
+CategoryRouter.get("/all", CategoryController.GetAllCategories)
+
+/**
+ * @swagger
+ *  /admin/category/list-of-all:
+ *      get:
+ *          tags: [Category(Admin-Panel)]
+ *          summary: Get List of categories
+ *          responses:
+ *              200:
+ *                  description: GET Success
+ */
+CategoryRouter.get("/list-of-all", CategoryController.GetAllCategoriesWithoutPopulate)
+
+/**
+ * @swagger
+ *  /admin/category/parents:
+ *      get:
+ *          tags: [Category(Admin-Panel)]
+ *          summary: Gets all the parent categories
+ *          responses:
+ *              201:
+ *                  description: GET successfully
+ */
+CategoryRouter.get("/parents", CategoryController.GetAllParents)
+
+/**
+ * @swagger
+ *  /admin/category/children/{parent}:
+ *      get:
+ *          tags: [Category(Admin-Panel)]
+ *          summary: Gets the child categories of a parent
+ *          parameters:
+ *              -   in: path
+ *                  name: id
+ *                  type: string
+ *                  required: true
+ *          responses:
+ *              200:
+ *                  description: GET success
+ */
+CategoryRouter.get("/children/:id", CategoryController.GetChildrenOfParents)
+
+/**
+ * @swagger
  *  /admin/category/{id}:
  *      get:
- *          tags: [Admin-Panel]
+ *          tags: [Category(Admin-Panel)]
  *          summary: Gets category by Id
  *          parameters:
  *              -   in: path
