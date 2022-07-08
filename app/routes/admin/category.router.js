@@ -64,9 +64,9 @@ CategoryRouter.get("/children/:id", CategoryController.GetChildrenOfParents)
 CategoryRouter.post("/add", CategoryController.AddCategory)
 
 /**
-* @swagger
-*  /admin/category/edit/{id}:
-*      patch:
+ * @swagger
+ *  /admin/category/edit/{id}:
+ *      patch:
  *          tags: [Admin-Panel]
  *          summary: Add a new category
  *          parameters:
@@ -104,6 +104,23 @@ CategoryRouter.patch("/edit/:id", CategoryController.EditCategory)
  *                  description: deleted Successfully
  */
 CategoryRouter.delete("/remove/:id", CategoryController.RemoveCategory)
+
+/**
+ * @swagger
+ *  /admin/category/{id}:
+ *      get:
+ *          tags: [Admin-Panel]
+ *          summary: Gets category by Id
+ *          parameters:
+ *              -   in: path
+ *                  name: id
+ *                  type: string
+ *                  required: true
+ *          responses:
+ *              200:
+ *                  description: GET success
+ */
+CategoryRouter.get("/:id", CategoryController.GetCategoryById)
 
 module.exports = {
     CategoryRouter

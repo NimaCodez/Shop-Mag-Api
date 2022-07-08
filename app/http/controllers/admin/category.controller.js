@@ -5,12 +5,14 @@ const Controller = require("../controller");
 const { CreateCategoryValidation } = require("../../validators/admin/category.schema");
 const { MongoIdValidator } = require("../../validators/public");
 const { default: mongoose } = require("mongoose");
+const { id } = require("@hapi/joi/lib/base");
 
 class CategoryController extends Controller {
     async AddCategory(req, res, next) {
         try {
             await CreateCategoryValidation.validateAsync(req.body)
             const { title, parent } = req.body;
+
             const existCheck = await this.CheckCategoryExistence(title);
             if (existCheck) throw { status: 400, success: false, message: "Category already exists! 🗿" }
             const createResult = await CategoryModel.create({ title, parent })
@@ -18,7 +20,7 @@ class CategoryController extends Controller {
             return res.status(201).json({
                 status: 201,
                 success: true,
-                message: "Category was successfully 🎉✨"
+                message: "Category was created successfully 🎉✨"
             })
         } catch (error) {
             next(error);
@@ -58,7 +60,10 @@ class CategoryController extends Controller {
             const { id } = req.params;
             const findResult = await this.CheckCategoryExistenceById(id);
             if (!findResult) throw createError.NotFound("Category does not exist")
-            const deleteResult = await CategoryModel.deleteOne({ _id: id });
+            const deleteResult = await CategoryModel.deleteMany({ $or: [
+                { _id: mongoose.Types.ObjectId(id) },
+                { parent: mongoose.Types.ObjectId(id) }
+            ]});
             if (deleteResult.deletedCount == 0) throw { status: 500, success: false, message: "Category was not deleted from database" }
             return res.status(200).json({
                 statius: 200,
@@ -72,27 +77,55 @@ class CategoryController extends Controller {
         }
     }
 
-    async GetAllCategories(req, res, next) {
+    async GetCategoryById(req, res, next) {
         try {
-            const categories = await CategoryModel.aggregate([
+            await MongoIdValidator.validateAsync(req.params);
+            const { id } = req.params;
+            const category = CategoryModel.aggregate([
                 {
-                    $graphLookup: {
-                        from: "categories",
-                        startWith: "$_id",
-                        connectFromField: "_id",
-                        connectToField: "parent",
-                        maxDepth: 9,
-                        depthField: "depth",
-                        as: "children"
-                    }
-                },
-                {
-                    $project: {
-                        __v: 0,
-                        "children.__v": 0
+                    $match: {
+                        _id : id
                     }
                 }
             ])
+            return res.status(200).json({
+                data: {
+                    category
+                }
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async GetAllCategories(req, res, next) {
+        try {
+            // const categories = await CategoryModel.aggregate([
+            //     {
+            //         $graphLookup: {
+            //             from: "categories",
+            //             startWith: "$_id",
+            //             connectFromField: "_id",
+            //             connectToField: "parent",
+            //             maxDepth: 9,
+            //             depthField: "depth",
+            //             as: "children"
+            //         }
+            //     },
+            //     {
+            //         $project: {
+            //             __v: 0,
+            //             "children.__v": 0,
+            //             "children.parent": 0
+            //         }
+            //     },
+            //     {
+            //         $match: {
+            //             parent: undefined
+            //         }
+            //     }
+            // ])
+            const categories = await CategoryModel.find({ parent: undefined }, { __v: 0, id: 0 })
             return res.status(200).json({
                 status: 200,
                 success: true,
@@ -105,21 +138,21 @@ class CategoryController extends Controller {
         }
     }
 
-    async GetCategoryById(req, res, next) {
-        try {
-            await MongoIdValidator.validateAsync(req.params);
-            const { id } = req.params;
-            const category = await CategoryModel.findOne({ _id: id });
-            if (!category) throw createError.NotFound("No category was found")
-            return res.stats(200).json({
-                status: 200,
-                success: true,
-                data: { category }
-            })
-        } catch (error) {
-            next(error);
-        }
-    }
+    // async GetCategoryById(req, res, next) {
+    //     try {
+    //         await MongoIdValidator.validateAsync(req.params);
+    //         const { id } = req.params;
+    //         const category = await CategoryModel.findOne({ _id: id });
+    //         if (!category) throw createError.NotFound("No category was found")
+    //         return res.status(200).json({
+    //             status: 200,
+    //             success: true,
+    //             data: { category }
+    //         })
+    //     } catch (error) {
+    //         next(error);
+    //     }
+    // }
 
     async GetAllParents(req, res, next) {
         try {
