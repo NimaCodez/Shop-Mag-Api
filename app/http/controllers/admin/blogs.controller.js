@@ -3,11 +3,13 @@ const Controller = require("../controller");
 class BlogController extends Controller {
     async CreateBlog(req, res, next) {
         try {
-            return res.status(200).json({
-                status: 200,
-                data: {
-                    blogs: []
-                }
+            const { title, short_text, text, image, category, tags } = req.body;
+            return res.json({
+                title,
+                short_text,
+                text,
+                category,
+                tags
             })
         } catch (error) {
             next(error)
