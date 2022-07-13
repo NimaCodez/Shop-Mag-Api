@@ -1,3 +1,4 @@
+const { verifyAccessToken } = require('../../http/middlewares/verifyAccessToken');
 const { AdminBlogsRouter } = require('./blog.router');
 const { CategoryRouter } = require('./category.router');
 const adminRouter = require('express').Router();
@@ -13,7 +14,7 @@ const adminRouter = require('express').Router();
  *          description: Admin Panel Rights and routes for Blogs
  */
 adminRouter.use('/category', CategoryRouter)
-adminRouter.use('/blogs', AdminBlogsRouter)
+adminRouter.use('/blogs', verifyAccessToken, AdminBlogsRouter)
 module.exports = {
     adminRouter
 }

@@ -10,6 +10,12 @@ const AdminBlogsRouter = require("express").Router();
  *      get:
  *          tags: [Blogs(Admin-Panel)]
  *          summary: get All Blogs
+ *          parameters:
+ *              -   in: header
+ *                  name: access-token
+ *                  value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2JpbGUiOiIwOTMwNDE3NTIxMCIsImlhdCI6MTY1NzY5MDYzMCwiZXhwIjoxNjU3Njk0MjMwfQ.Rzda49iiaJAH6JIe9E2AoZ_qQsIbjfalKXUNjHqLwPE
+ *                  type: string
+ *                  required: true
  *          responses:
  *              200:
  *                  description: Success
@@ -23,6 +29,11 @@ AdminBlogsRouter.get("/", AdminBlogsController.GetAllBlogs)
  *          tags: [Blogs(Admin-Panel)]
  *          summary: Create new blog document
  *          parameters:
+ *              -   in: header
+ *                  name: access-token
+ *                  value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2JpbGUiOiIwOTMwNDE3NTIxMCIsImlhdCI6MTY1NzY5MDYzMCwiZXhwIjoxNjU3Njk0MjMwfQ.Rzda49iiaJAH6JIe9E2AoZ_qQsIbjfalKXUNjHqLwPE
+ *                  type: string
+ *                  required: true
  *              -   in: formData
  *                  name: title
  *                  type: string
