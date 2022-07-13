@@ -1,3 +1,4 @@
+const createHttpError = require("http-errors");
 const path = require("path");
 const { BlogModel } = require("../../../models/blog.model");
 const { DeleteFileInPublic } = require("../../../utils/functions");
@@ -14,7 +15,6 @@ class BlogController extends Controller {
             const author = req.user._id;
             const CreateResult = await BlogModel.create({ author, title, short_text, text, image, category, tags })
             return res.json({
-                BlogDataBody,
                 CreateResult: CreateResult
             })
         } catch (error) {
@@ -22,53 +22,25 @@ class BlogController extends Controller {
             next(error)
         }
     }
+
     async GetAllBlogs(req, res, next) {
         try {
             const blogs = await BlogModel.aggregate([
                 { $match: {} },
-                {
-                    $lookup: {
-                        from: "users",
-                        foreignField: "_id",
-                        localField: "author",
-                        as: "author"
-                    }
-                },
-                {
-                    $unwind: "$author"
-                },
-                {
-                    $lookup: {
-                        from: "categories",
-                        foreignField: "_id",
-                        localField: "category",
-                        as: "category"
-                    }
-                },
-                {
-                    $unwind: "$category"
-                },
+                { $lookup: { from: "users", foreignField: "_id", localField: "author", as: "author" } },
+                { $unwind: "$author" },
+                { $lookup: { from: "categories", foreignField: "_id", localField: "category", as: "category" } },
+                { $unwind: "$category" },
                 {
                     $project: {
-                        "author.otp": 0,
-                        "author.__v": 0,
-                        "author.bills": 0,
-                        "author.discount": 0,
-                        "author.createdAt": 0,
-                        "author.updatedAt": 0,
-                        "author.Role": 0,
-                        "category.parent": 0,
-                        "category.__v": 0,
-                        "createdAt": 0,
-                        "__v": 0,
-                        "updatedAt": 0
+                        "author.otp": 0, "author.__v": 0, "author.bills": 0, "author.discount": 0, "author.createdAt": 0, "author.updatedAt": 0, "author.Role": 0, "category.parent": 0, "category.__v": 0, "createdAt": 0, "__v": 0, "updatedAt": 0
                     }
                 }
             ])
             return res.status(200).json({
+                status: 200,
+                success: true,
                 data: {
-                    status: 200,
-                    success: true,
                     blogs
                 }
             })
@@ -76,22 +48,28 @@ class BlogController extends Controller {
             next(error)
         }
     }
+
     async GetBlogById(req, res, next) {
         try {
+            const { id } = req.params;
+            const blog = await this.FindBlog(id)
             return res.status(200).json({
                 status: 200,
+                success: true,
                 data: {
-                    blogs: []
+                    blog
                 }
             })
         } catch (error) {
             next(error)
         }
     }
+
     async EditBlog(req, res, next) {
         try {
             return res.status(200).json({
                 status: 200,
+                success: true,
                 data: {
                     blogs: []
                 }
@@ -100,22 +78,12 @@ class BlogController extends Controller {
             next(error)
         }
     }
-    async EditBlog(req, res, next) {
-        try {
-            return res.status(200).json({
-                status: 200,
-                data: {
-                    blogs: []
-                }
-            })
-        } catch (error) {
-            next(error)
-        }
-    }
+
     async RemoveBlog(req, res, next) {
         try {
             return res.status(200).json({
                 status: 200,
+                success: true,
                 data: {
                     blogs: []
                 }
@@ -124,7 +92,12 @@ class BlogController extends Controller {
             next(error)
         }
     }
-    
+
+    async FindBlog(id) {
+        const blog = await BlogModel.findOne({ _id: id }, { createdAt: 0, updatedAt: 0, __v: 0 });
+        if (!blog) return createHttpError.NotFound("There is no such a Mag Here! 🐢🗿")
+        return blog
+    }
 }
 
 module.exports = {

@@ -105,6 +105,8 @@ class CategoryController extends Controller {
                 }
             ])
             return res.status(200).json({
+                status: 200,
+                success: true,
                 data: {
                     category
                 }
@@ -170,22 +172,6 @@ class CategoryController extends Controller {
             next(error)
         }
     }
-
-    // async GetCategoryById(req, res, next) {
-    //     try {
-    //         await MongoIdValidator.validateAsync(req.params);
-    //         const { id } = req.params;
-    //         const category = await CategoryModel.findOne({ _id: id });
-    //         if (!category) throw createError.NotFound("No category was found")
-    //         return res.status(200).json({
-    //             status: 200,
-    //             success: true,
-    //             data: { category }
-    //         })
-    //     } catch (error) {
-    //         next(error);
-    //     }
-    // }
 
     async GetAllParents(req, res, next) {
         try {

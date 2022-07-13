@@ -42,7 +42,7 @@ const verifyRefreshToken = (token) => {
     
             if (!user) reject(createError.Unauthorized("No Account Was found! 🐢"));
 
-            const refreshToken = await redisClient.get(String(user._id));
+            // const refreshToken = await redisClient.get(String(user._id));
             if(token === refreshToken) resolve(mobile)
 
             reject(createError.Unauthorized("Force Login to account was not done"));

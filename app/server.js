@@ -47,7 +47,6 @@ module.exports = class Application {
             apis: ["./app/routes/**/*.js"],
         })))
     }
-
     CreateServer() {
         const http = require('http');
         http.createServer(this.#app).listen(this.#PORT, () => {

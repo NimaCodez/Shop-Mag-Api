@@ -1,7 +1,6 @@
 const { AdminBlogsController } = require("../../http/controllers/admin/blogs.controller");
 const { StringToArray } = require("../../http/middlewares/StringToArray");
 const { UploadFile } = require("../../utils/multer");
-
 const AdminBlogsRouter = require("express").Router();
 
 /**
@@ -67,6 +66,31 @@ AdminBlogsRouter.get("/", AdminBlogsController.GetAllBlogs)
  *                  description: Internal Server Error
  */
 AdminBlogsRouter.post("/new", UploadFile.single("image"), StringToArray("tags"), AdminBlogsController.CreateBlog)
+
+/**
+ * @swagger
+ *  /admin/blogs/{id}:
+ *      get:
+ *          tags: [Blogs(Admin-Panel)]
+ *          summary: Get blog bu blogId
+ *          parameters:
+ *              -   in: path
+ *                  name: id
+ *                  type: string
+ *                  required: true
+ *              -   in: header
+ *                  name: access-token
+ *                  type: string
+ *                  required: true
+ *          responses:
+ *              200:
+ *                  description: GET success
+ *              404:
+ *                  description: Not found
+ *              500:
+ *                  description: INTERNAL SERVER ERROR
+ */
+AdminBlogsRouter.get("/:id", AdminBlogsController.GetBlogById);
 
 module.exports = {
     AdminBlogsRouter

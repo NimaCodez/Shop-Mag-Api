@@ -17,9 +17,9 @@ class UserAuthController extends Controller {
             return res.status(200).json({
                 status: 200,
                 success: true,
-                message: `Logged in successfully: Code: ${code}`,
                 code,
-                mobile
+                mobile,
+                message: `Logged in successfully: Code: ${code}`
             })
         } catch (error) {
             next(createError.BadRequest(error.message));
@@ -52,6 +52,8 @@ class UserAuthController extends Controller {
             const AccessToken = await SignAccessToken(user);
             const newRefreshToken = await SignRefreshToken(user._id);
             return res.json({
+                status: 200,
+                success: true,
                 data: {
                     accessToken: AccessToken,
                     refreshToken: newRefreshToken
