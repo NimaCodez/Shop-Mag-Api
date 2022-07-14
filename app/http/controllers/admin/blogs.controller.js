@@ -1,4 +1,5 @@
 const createHttpError = require("http-errors");
+const { default: mongoose } = require("mongoose");
 const path = require("path");
 const { BlogModel } = require("../../../models/blog.model");
 const { DeleteFileInPublic } = require("../../../utils/functions");
@@ -52,7 +53,7 @@ class BlogController extends Controller {
     async GetBlogById(req, res, next) {
         try {
             const { id } = req.params;
-            const blog = await this.FindBlog(id)
+            const blog = await this.FindBlog(id);
             return res.status(200).json({
                 status: 200,
                 success: true,
@@ -81,11 +82,14 @@ class BlogController extends Controller {
 
     async RemoveBlog(req, res, next) {
         try {
+            const { id } = req.params;
+            const deleteResult = await BlogModel.deleteOne({ _id : id });
+            if (deleteResult.deletedCount == 0) throw createHttpError.InternalServerError("Blog was not deleted")
             return res.status(200).json({
                 status: 200,
                 success: true,
                 data: {
-                    blogs: []
+                    message: "Successfully deleted 🎉✨ "
                 }
             })
         } catch (error) {
@@ -94,9 +98,12 @@ class BlogController extends Controller {
     }
 
     async FindBlog(id) {
-        const blog = await BlogModel.findOne({ _id: id }, { createdAt: 0, updatedAt: 0, __v: 0 });
-        if (!blog) return createHttpError.NotFound("There is no such a Mag Here! 🐢🗿")
-        return blog
+        const blog = await BlogModel.findById(id).populate([
+            { path: "category", select: ['title'] },
+            { path: "author", select: ['mobile', 'first_name', 'last_name', 'username' ] }
+        ])
+        if (!blog) throw createHttpError.NotFound("There is no such a Mag Here! 🐢🗿");
+        return blog;
     }
 }
 

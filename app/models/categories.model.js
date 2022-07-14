@@ -5,7 +5,7 @@ const CategorySchema = new Schema({
     parent : { type : Types.ObjectId, ref: "categories", default : undefined }
 }, {
     toJSON: {
-        virtuals: true
+        virtuals: true,
     }
 })
 

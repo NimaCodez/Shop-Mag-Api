@@ -17,6 +17,9 @@ const UserSchema = new Schema({
     Role : { type : [String], default : "USER" },
 }, {
     timestamps: true,
+    toJSON: {
+        virtuals: true,
+    }
 })
 
 module.exports = {

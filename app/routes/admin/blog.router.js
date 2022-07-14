@@ -72,7 +72,7 @@ AdminBlogsRouter.post("/new", UploadFile.single("image"), StringToArray("tags"),
  *  /admin/blogs/{id}:
  *      get:
  *          tags: [Blogs(Admin-Panel)]
- *          summary: Get blog bu blogId
+ *          summary: Get blog by blogId
  *          parameters:
  *              -   in: path
  *                  name: id
@@ -91,6 +91,31 @@ AdminBlogsRouter.post("/new", UploadFile.single("image"), StringToArray("tags"),
  *                  description: INTERNAL SERVER ERROR
  */
 AdminBlogsRouter.get("/:id", AdminBlogsController.GetBlogById);
+
+/**
+ * @swagger
+ *  /admin/blogs/remove/{id}:
+ *      delete:
+ *          tags: [Blogs(Admin-Panel)]
+ *          summary: Delete blog by blogId
+ *          parameters:
+ *              -   in: path
+ *                  name: id
+ *                  type: string
+ *                  required: true
+ *              -   in: header
+ *                  name: access-token
+ *                  type: string
+ *                  required: true
+ *          responses:
+ *              200:
+ *                  description: GET success
+ *              404:
+ *                  description: Not found
+ *              500:
+ *                  description: INTERNAL SERVER ERROR
+ */
+AdminBlogsRouter.delete("/remove/:id", AdminBlogsController.RemoveBlog);
 
 module.exports = {
     AdminBlogsRouter
