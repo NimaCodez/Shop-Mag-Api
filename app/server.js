@@ -28,6 +28,7 @@ module.exports = class Application {
         this.#app.use("/swagger", swaggerUI.serve)
         this.#app.get("/swagger", swaggerUI.setup(swaggerJsDoc({
             swaggerDefinition: {
+                openapi: "3.0.0",
                 info: {
                     title: "Shop-Mag Api",
                     version: "2.0.0",

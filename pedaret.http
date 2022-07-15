@@ -1,9 +1,0 @@
-### Post
-POST http://localhost:8000/
-
-Content-Type: application/json
-
-{
-    "email": "nimacodes@gmail.com",
-    "password": "testpassword",
-}
