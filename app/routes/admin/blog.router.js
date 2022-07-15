@@ -69,6 +69,51 @@ AdminBlogsRouter.post("/new", UploadFile.single("image"), StringToArray("tags"),
 
 /**
  * @swagger
+ *  /admin/blogs/update/{id}:
+ *      patch:
+ *          tags: [Blogs(Admin-Panel)]
+ *          summary: Update blog document by id
+ *          parameters:
+ *              -   in: header
+ *                  name: access-token
+ *                  value: Bearer 
+ *                  type: string
+ *                  required: true
+ *              -   in: path
+ *                  name: id 
+ *                  type: string
+ *                  required: true
+ *              -   in: formData
+ *                  name: title
+ *                  type: string
+ *              -   in: formData
+ *                  name: short_text
+ *                  type: string
+ *              -   in: formData
+ *                  name: text
+ *                  type: string
+ *              -   in: formData
+ *                  name: category
+ *                  type: string
+ *              -   in: formData
+ *                  name: image
+ *                  type: file
+ *              -   in: formData
+ *                  name: tags
+ *                  example: tag1#tag2#tag_foo#foobar
+ *                  type: string
+ *          responses:
+ *              200:
+ *                  description: Updated
+ *              400:
+ *                  description: Bad Request (Params Maybe sent badly)
+ *              500:
+ *                  description: Internal Server Error
+ */
+AdminBlogsRouter.patch("/update/:id", UploadFile.single("image"), StringToArray("tags"), AdminBlogsController.EditBlog)
+
+/**
+ * @swagger
  *  /admin/blogs/{id}:
  *      get:
  *          tags: [Blogs(Admin-Panel)]

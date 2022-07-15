@@ -4,29 +4,33 @@ const createError = require("http-errors");
 const { UserModel } = require('../../models/user.model');
 const redisClient = require('../../utils/init_redis');
 
-const verifyAccessToken = (req, res, next) => {
-    const headers = req.headers;
+GetToken = (headers) => {
     const [bearer, token] = headers?.["access-token"]?.split(" ") || [];
+    if (token && ["Bearer", "bearer"].includes(bearer)) return token;
+    throw createError.Unauthorized("please Login first! 🐢 ")
+}
 
-    if (token && ["Bearer", "bearer"].includes(bearer)) {
-
+const verifyAccessToken = (req, res, next) => {
+    try {
+        const token = GetToken(req.headers);
         JWT.verify(token, JWT_TOKEN_SECRET_KEY, async (err, payload) => {
-
-            if (err) return next(createError.Unauthorized("Please Log in to your account! 🐢"));
-
-            const { mobile } = payload || {};
-            const user = await UserModel.findOne({ mobile }, { password: 0, otp: 0 });
-
-            if (!user) return next(createError.Unauthorized("No Account Was found! 🐢"));
-            req.user = user;
-
-            return next();
-
-        })
-
+            try {
+                if (err) throw createHttpError.Unauthorized("Please Login first! 🐢 ");
+                const { mobile } = payload || {};
+                const user = await UserModel.findOne(
+                    { mobile },
+                    { password: 0, otp: 0 }
+                );
+                if (!user) throw createHttpError.Unauthorized("Please Login first! 🐢 ");
+                req.user = user;
+                return next();
+            } catch (error) {
+                next(error);
+            }
+        });
+    } catch (error) {
+        next(error);
     }
-
-    else return next(createError.Unauthorized("Please Log in to your account! 🐢"));
 }
 
 const verifyRefreshToken = (token) => {
@@ -34,16 +38,16 @@ const verifyRefreshToken = (token) => {
     return new Promise((resolve, reject) => {
 
         JWT.verify(token, REFRESH_TOKEN_SECRET_KEY, async (err, payload) => {
-    
+
             if (err) reject(createError.Unauthorized("Please Log in to your account! 🐢"));
-    
+
             const { mobile } = payload || {};
             const user = await UserModel.findOne({ mobile }, { password: 0, otp: 0 });
-    
+
             if (!user) reject(createError.Unauthorized("No Account Was found! 🐢"));
 
             // const refreshToken = await redisClient.get(String(user._id));
-            if(token === refreshToken) resolve(mobile)
+            if (token === refreshToken) resolve(mobile)
 
             reject(createError.Unauthorized("Force Login to account was not done"));
         })
@@ -52,7 +56,20 @@ const verifyRefreshToken = (token) => {
 
 }
 
+function CheckRole(role) {
+    return function(req, res, next) {
+        try {
+            const user = req.user;
+            if (user.Roles.includes(role)) return next();
+            throw createError.Forbidden("You haven't the right role to access this page 😂👋🏻")
+        } catch (error) {
+            next(error)
+        }
+    }
+}
+
 module.exports = {
     verifyAccessToken,
-    verifyRefreshToken
+    verifyRefreshToken,
+    CheckRole,
 }

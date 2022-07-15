@@ -1,4 +1,5 @@
 const path = require("path");
+const fs = require("fs");
 const JWT = require("jsonwebtoken");
 const { UserModel } = require("../models/user.model");
 const { JWT_TOKEN_SECRET_KEY, REFRESH_TOKEN_SECRET_KEY } = require("./constants");
@@ -44,8 +45,10 @@ async function SignRefreshToken(userId) {
 }
 
 function DeleteFileInPublic(FileAddress) {
-    const FilePath = path.join(__dirname, "..", "..", "public", FileAddress);
-    require("fs").unlinkSync(FilePath);
+    if (FileAddress) {
+        const FilePath = path.join(__dirname, "..", "..", "public", FileAddress)
+        if(fs.existsSync(FilePath)) fs.unlinkSync(FilePath);
+    }
 }
 
 module.exports = {

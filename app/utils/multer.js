@@ -19,22 +19,23 @@ const CreateImageNameHash = (imageName) => {
     return md5(imageName)
 }
 
-const CreateLinkForFile = () => {
-    
-}
-
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const filePath = CreateFilePath(req);
-        cb(null, filePath);
+        if (file?.originalname) {
+            const filePath = CreateFilePath(req);
+            return cb(null, filePath);
+        }
+        cb(null, null)
     },
 
     filename: async (req, file, cb) => {
-        //image.file.png
-        const ext = path.extname(file.originalname);
-        const fileName = String(CreateImageNameHash(file.originalname) + ext)
-        req.fileName = fileName;
-        cb(null, fileName);
+        if (file?.originalname) {
+            const ext = path.extname(file.originalname);
+            const fileName = String(CreateImageNameHash(file.originalname) + ext)
+            req.fileName = fileName;
+            return cb(null, fileName);
+        }
+        cb(null, null)
     }
 })
 
