@@ -1,5 +1,23 @@
 const { CategoryController } = require("../../http/controllers/admin/category.controller");
+const { verifyAccessToken, CheckRole } = require("../../http/middlewares/verifyAccessToken");
 const CategoryRouter = require("express").Router();
+
+/**
+ * @swagger
+ *  components:
+ *      schemas:
+ *          Category:
+ *              type: object
+ *              required:
+ *                  -   title
+ *              properties:
+ *                  title:
+ *                      type: string
+ *                      description: Category's title
+ *                  parent:
+ *                      type: string
+ *                      description: Category's parent
+ */
 
 /**
  * @swagger
@@ -8,19 +26,22 @@ const CategoryRouter = require("express").Router();
  *          tags: [Category(Admin-Panel)]
  *          summary: Add a new category
  *          parameters:
- *              -   in: formData
- *                  name: title
+ *              -   in: header
+ *                  name: access-token
  *                  type: string
+ *                  value: Bearer
  *                  required: true
- *              -   in: formData
- *                  name: parent
- *                  type: string
- *                  required: false
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/x-www-form-urlencoded:
+ *                      schema:
+ *                          $ref: '#/component/schemas/Category'
  *          responses:
  *              201:
  *                  description: Created Successfully
  */
-CategoryRouter.post("/add", CategoryController.AddCategory)
+CategoryRouter.post("/add", verifyAccessToken(), CheckRole("ADMIN"), CategoryController.AddCategory)
 
 /**
  * @swagger

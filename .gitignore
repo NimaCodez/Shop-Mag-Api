@@ -5,3 +5,4 @@ public
 configs
 tests.js
 .vscode
+app/utils/constants.js

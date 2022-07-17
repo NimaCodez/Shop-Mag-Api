@@ -19,7 +19,7 @@ module.exports = class Application {
         this.CreateRoutes();
         this.ErrorHandler();
     }
-    
+
     ConfigApplication() {
         this.#app.use(morgan("dev"))
         this.#app.use(express.json())
@@ -46,8 +46,11 @@ module.exports = class Application {
                 ],
             },
             apis: ["./app/routes/**/*.js"],
-        })))
+        }),
+            { explorer: true }
+        ))
     }
+    
     CreateServer() {
         const http = require('http');
         http.createServer(this.#app).listen(this.#PORT, () => {

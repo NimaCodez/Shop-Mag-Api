@@ -4,6 +4,40 @@ const AuthRouter = require("express").Router();
 
 /**
  * @swagger
+ *  components:
+ *      schemas:
+ *          GetOTP:
+ *              type: object
+ *              required:
+ *                  -   mobile
+ *              properties:
+ *                  mobile:
+ *                      type: string
+ *                      description: the user mobile code for authentication.
+ *          CheckOTP:
+ *              type: object
+ *              required:
+ *                  -   mobile
+ *                  -   code
+ *              properties:
+ *                  mobile:
+ *                      type: string
+ *                      description: User's Phone number for SignUp/Login
+ *                  code:
+ *                      type: integer
+ *                      description: The authentication code sent by system to user.
+ *          RefreshToken:
+ *              type: object
+ *              required:
+ *                  -   refreshToken
+ *              properties:
+ *                  refreshToken:
+ *                      type: string
+ *                      description: The Access Token From checkOTP part.
+ */
+
+/**
+ * @swagger
  *  tags: 
  *      name: AuthRoutes
  *      description: User Auth Routes
@@ -15,12 +49,15 @@ const AuthRouter = require("express").Router();
  *          summary: Generates Otp For User 
  *          tags: [AuthRoutes]
  *          description : Generate Otp for mobiles
- *          parameters:
- *              -   in: formData
- *                  name: mobile
- *                  example: 09304175210
- *                  required: true
- *                  type: string
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/x-www-form-urlencoded:
+ *                      schema:
+ *                          $ref: '#/components/schemas/GetOTP'
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/GetOTP'
  *          responses:
  *              200:
  *                  description: success
@@ -35,20 +72,15 @@ AuthRouter.post("/getotp", UserAuthController.GetOtp)
  *          summary: Otp Checking route
  *          tags: [AuthRoutes]
  *          description: Checks User's Otp Code and Phone Number
- *          parameters:
- *              -   in: formData
- *                  name: mobile
- *                  description: fa-IRI phone number
- *                  example: 09304175210
- *                  required: true
- *                  type: string
- * 
- *              -   name: code
- *                  example: 33412
- *                  description: Code which is sms'ed
- *                  required: true
- *                  type: string
- *                  in: formData
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/x-www-form-urlencoded:
+ *                      schema:
+ *                          $ref: '#/components/schemas/CheckOTP'
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/CheckOTP'
  *          responses:
  *              200:
  *                  description: OK
@@ -69,11 +101,15 @@ AuthRouter.post("/check-otp", UserAuthController.CheckOtp)
  *          summary: Refresh Token for user
  *          tags: [AuthRoutes]
  *          description: Refresh token generator for user to do Payment and ...
- *          parameters:
- *              -   in: formData
- *                  name: refreshToken
- *                  type: string
- *                  required: true
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/x-www-form-urlencoded:
+ *                      schema:
+ *                          $ref: '#/components/schemas/RefreshToken'
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/RefreshToken'
  *          responses: 
  *              200:
  *                  description: OK
