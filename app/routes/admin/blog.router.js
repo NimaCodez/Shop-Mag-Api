@@ -5,16 +5,44 @@ const AdminBlogsRouter = require("express").Router();
 
 /**
  * @swagger
+ *  components:
+ *      schemas:
+ *          Blog:
+ *              type: object
+ *              required:
+ *                  -   title
+ *                  -   short_text
+ *                  -   text
+ *                  -   tags
+ *                  -   category
+ *                  -   image
+ *              properties:
+ *                  title:
+ *                      type: string
+ *                      description: Blog title
+ *                  short_text:
+ *                      type: string
+ *                      description: Short intro text of Blog
+ *                  text:
+ *                      type: string
+ *                      description: Actual Blog Text
+ *                  tags:
+ *                      type: string
+ *                      description: Related tags to blog
+ *                  category:
+ *                      type: string
+ *                      description: Related categories Id
+ *                  image:
+ *                      type: file
+ *                      description: Blog picture
+ */
+
+/**
+ * @swagger
  *  /admin/blogs:
  *      get:
  *          tags: [Blogs(Admin-Panel)]
  *          summary: get All Blogs
- *          parameters:
- *              -   in: header
- *                  name: access-token
- *                  value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2JpbGUiOiIwOTMwNDE3NTIxMCIsImlhdCI6MTY1NzY5MDYzMCwiZXhwIjoxNjU3Njk0MjMwfQ.Rzda49iiaJAH6JIe9E2AoZ_qQsIbjfalKXUNjHqLwPE
- *                  type: string
- *                  required: true
  *          responses:
  *              200:
  *                  description: Success
@@ -27,36 +55,12 @@ AdminBlogsRouter.get("/", AdminBlogsController.GetAllBlogs)
  *      post:
  *          tags: [Blogs(Admin-Panel)]
  *          summary: Create new blog document
- *          parameters:
- *              -   in: header
- *                  name: access-token
- *                  value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2JpbGUiOiIwOTMwNDE3NTIxMCIsImlhdCI6MTY1NzY5MDYzMCwiZXhwIjoxNjU3Njk0MjMwfQ.Rzda49iiaJAH6JIe9E2AoZ_qQsIbjfalKXUNjHqLwPE
- *                  type: string
- *                  required: true
- *              -   in: formData
- *                  name: title
- *                  type: string
- *                  required: true
- *              -   in: formData
- *                  name: short_text
- *                  type: string
- *                  required: true
- *              -   in: formData
- *                  name: text
- *                  type: string
- *                  required: true
- *              -   in: formData
- *                  name: category
- *                  type: string
- *                  required: true
- *              -   in: formData
- *                  name: image
- *                  type: file
- *              -   in: formData
- *                  name: tags
- *                  example: tag1#tag2#tag_foo#foobar
- *                  type: string
- *                  required: true
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  multipart/form-data:
+ *                      schema: 
+ *                          $ref: '#/components/schemas/Blog'
  *          responses:
  *              201:
  *                  description: Created
@@ -74,11 +78,6 @@ AdminBlogsRouter.post("/new", UploadFile.single("image"), StringToArray("tags"),
  *          tags: [Blogs(Admin-Panel)]
  *          summary: Update blog document by id
  *          parameters:
- *              -   in: header
- *                  name: access-token
- *                  value: Bearer 
- *                  type: string
- *                  required: true
  *              -   in: path
  *                  name: id 
  *                  type: string
@@ -123,10 +122,6 @@ AdminBlogsRouter.patch("/update/:id", UploadFile.single("image"), StringToArray(
  *                  name: id
  *                  type: string
  *                  required: true
- *              -   in: header
- *                  name: access-token
- *                  type: string
- *                  required: true
  *          responses:
  *              200:
  *                  description: GET success
@@ -146,10 +141,6 @@ AdminBlogsRouter.get("/:id", AdminBlogsController.GetBlogById);
  *          parameters:
  *              -   in: path
  *                  name: id
- *                  type: string
- *                  required: true
- *              -   in: header
- *                  name: access-token
  *                  type: string
  *                  required: true
  *          responses:

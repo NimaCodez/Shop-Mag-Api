@@ -25,23 +25,17 @@ const CategoryRouter = require("express").Router();
  *      post:
  *          tags: [Category(Admin-Panel)]
  *          summary: Add a new category
- *          parameters:
- *              -   in: header
- *                  name: access-token
- *                  type: string
- *                  value: Bearer
- *                  required: true
  *          requestBody:
  *              required: true
  *              content:
  *                  application/x-www-form-urlencoded:
  *                      schema:
- *                          $ref: '#/component/schemas/Category'
+ *                          $ref: '#/components/schemas/Category'
  *          responses:
  *              201:
  *                  description: Created Successfully
  */
-CategoryRouter.post("/add", verifyAccessToken(), CheckRole("ADMIN"), CategoryController.AddCategory)
+CategoryRouter.post("/add", CategoryController.AddCategory)
 
 /**
  * @swagger
@@ -54,14 +48,15 @@ CategoryRouter.post("/add", verifyAccessToken(), CheckRole("ADMIN"), CategoryCon
  *                  name: id
  *                  type: string
  *                  required: true
- *              -   in: formData
- *                  name: title
- *                  type: string
- *                  required: false
- *              -   in: formData
- *                  name: parent
- *                  type: string
- *                  required: false
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/x-www-urlencoded:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Category'
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Category'
  *          responses:
  *              200:
  *                  description: EDITED Successfully
@@ -156,5 +151,5 @@ CategoryRouter.get("/children/:id", CategoryController.GetChildrenOfParents)
 CategoryRouter.get("/:id", CategoryController.GetCategoryById)
 
 module.exports = {
-    CategoryRouter
+    AdminCategoryRouter : CategoryRouter
 }
