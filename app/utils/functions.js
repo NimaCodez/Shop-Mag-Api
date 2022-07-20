@@ -44,6 +44,15 @@ async function SignRefreshToken(userId) {
 
 }
 
+function ListOfImagesFromRequest(files, fileUploadPath) {
+    if(files?.length) {
+        return (files.map(file => path.join(fileUploadPath, file.filename))).map(item => item.replace(/\\/gi, "/"))
+    }
+    else {
+        return []
+    }
+}
+
 function DeleteFileInPublic(FileAddress) {
     if (FileAddress) {
         const FilePath = path.join(__dirname, "..", "..", "public", FileAddress)
@@ -55,5 +64,6 @@ module.exports = {
     GenerateRandomNumber,
     SignAccessToken,
     SignRefreshToken,
-    DeleteFileInPublic
+    DeleteFileInPublic,
+    ListOfImagesFromRequest
 }
