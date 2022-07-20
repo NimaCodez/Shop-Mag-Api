@@ -1,12 +1,12 @@
 const { Schema, Types, model } = require("mongoose");
-
+const { CommentSchema } = require("./public.schema");
 const ProductSchema = new Schema({ 
     title : { type: String, required : true },
     short_text : { type: String, required : true },
     text : { type: String, required : true },
     images : { type: [String], required : true },
     tags : { type: [String], default : [] },
-    category : { type: Types.ObjectId, ref: "category", required : true },
+    category : { type: Types.ObjectId, ref: "categories", required : true },
     comments : { type: [CommentSchema], default : [] },
     likes : { type: [Types.ObjectId],ref:'user', default : [] },
     dislikes : { type: [Types.ObjectId],ref:'user', default : [] },

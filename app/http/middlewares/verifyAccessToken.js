@@ -2,26 +2,26 @@ const JWT = require('jsonwebtoken');
 const { JWT_TOKEN_SECRET_KEY, REFRESH_TOKEN_SECRET_KEY } = require('../../utils/constants');
 const createError = require("http-errors");
 const { UserModel } = require('../../models/user.model');
-const redisClient = require('../../utils/init_redis');
+// const redisClient = require('../../utils/init_redis');
 
-function GetToken (headers) {
-    const [bearer, token] = headers?.["access-token"]?.split(" ") || [];
-    if (token && ["Bearer", "bearer"].includes(bearer)) return token;
+async function GetToken (headers) {
+    const token = await headers?.authorization?.split(" ")[1] || [];
+    if (token) return token;
     throw createError.Unauthorized("please Login first! 🐢 ")
 }
 
-function verifyAccessToken(req, res, next) {
+async function verifyAccessToken(req, res, next) {
     try {
-        const token = GetToken(req.headers);
-        JWT.verify(token, ACCESS_TOKEN_SECRET_KEY, async (err, payload) => {
+        const token = await GetToken(req.headers).then(token => token);
+        JWT.verify(token, JWT_TOKEN_SECRET_KEY, async (err, payload) => {
             try {
-                if (err) throw createHttpError.Unauthorized("Login to your account! 🐢");
+                if (err) throw createError.Unauthorized("Login to your account! 🐢");
                 const { mobile } = payload || {};
                 const user = await UserModel.findOne(
                     { mobile },
                     { password: 0, otp: 0 }
                 );
-                if (!user) throw createHttpError.Unauthorized("Account was not found! 🐢");
+                if (!user) throw createError.Unauthorized("Account was not found! 🐢");
                 req.user = user;
                 return next();
             } catch (error) {
@@ -57,10 +57,10 @@ const verifyRefreshToken = (token) => {
 }
 
 function CheckRole(role) {
-    return function (req, res, next) {
+    return async function (req, res, next) {
         try {
-            const user = req.user;
-            if (user.Roles.includes(role)) return next();
+            const user = await req.user;
+            if (user.Role.includes(role)) return await next();
             throw createError.Forbidden("You haven't the right role to access this page 😂👋🏻")
         } catch (error) {
             next(error)
