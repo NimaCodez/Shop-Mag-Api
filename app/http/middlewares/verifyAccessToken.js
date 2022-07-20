@@ -15,7 +15,6 @@ async function verifyAccessToken(req, res, next) {
         const token = await GetToken(req.headers).then(token => token);
         JWT.verify(token, JWT_TOKEN_SECRET_KEY, async (err, payload) => {
             try {
-                console.log(err);
                 if (err) throw createError.Unauthorized("Login to your account! 🐢");
                 const { mobile } = payload || {};
                 const user = await UserModel.findOne(
@@ -24,7 +23,6 @@ async function verifyAccessToken(req, res, next) {
                 );
                 if (!user) throw createError.Unauthorized("Account was not found! 🐢");
                 req.user = user;
-                console.log(req.user);
                 return next();
             } catch (error) {
                 next(error);
