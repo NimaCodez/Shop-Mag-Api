@@ -58,8 +58,10 @@ const router = require("express").Router();
  *                      type: string
  *                      description: Product title
  *                  image:
- *                      type: file
- *                      description: Product title
+ *                      type: array
+ *                      items:
+ *                          type: string
+ *                          format: binary
  */
 
  /**
@@ -78,7 +80,7 @@ const router = require("express").Router();
  *              201:
  *                  description: created new Product
  */
-router.post("/add", UploadFile.single("image"), StringToArray("tags"), ProductController.AddProduct)
+router.post("/add", UploadFile.array("images", 10), StringToArray("tags"), ProductController.AddProduct)
 router.patch("/edit/:id", ProductController.EditProduct)
 router.delete("/remove/:id", ProductController.RemoveProduct)
 router.get("/", ProductController.GetAllProducts)
