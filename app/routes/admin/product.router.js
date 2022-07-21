@@ -8,6 +8,25 @@ const router = require("express").Router();
  * @swagger
  *  components:
  *      schemas:
+ *          Color:
+ *              type: array
+ *              items: 
+ *                  type: string
+ *                  enum:
+ *                      -   black
+ *                      -   white
+ *                      -   gray                
+ *                      -   red
+ *                      -   blue
+ *                      -   green
+ *                      -   orange
+ *                      -   purple
+ */ 
+
+/**
+ * @swagger
+ *  components:
+ *      schemas:
  *          Product:
  *              type: object
  *              required:
@@ -62,6 +81,8 @@ const router = require("express").Router();
  *                      items:
  *                          type: string
  *                          format: binary
+ *                  color:
+ *                      $ref: '#/components/schemas/Color'
  */
 
  /**
@@ -83,7 +104,42 @@ const router = require("express").Router();
 router.post("/add", UploadFile.array("images", 10), StringToArray("tags"), ProductController.AddProduct)
 router.patch("/edit/:id", ProductController.EditProduct)
 router.delete("/remove/:id", ProductController.RemoveProduct)
+/**
+ * @swagger
+ *  /admin/products/:
+ *      get:
+ *          tags: [Product(Admin-Panel)]
+ *          summary: get all the products
+ *          responses:
+ *              200:
+ *                  description: GET successful
+ *              404:
+ *                  description: Np products was found
+ *              500:
+ *                  description: INTERNAL SERVER ERROR
+ */
 router.get("/", ProductController.GetAllProducts)
+/**
+ * @swagger
+ *  /admin/products/{id}:
+ *      get:
+ *          tags: [Product(Admin-Panel)]
+ *          summary: Get one product By Id
+ *          parameters:
+ *              -   in: path
+ *                  name: id
+ *                  type: string
+ *                  description: ObjectId of product
+ *          responses:
+ *              200:
+ *                  description: GET successful
+ *              400:
+ *                  description: BadRequest | Maybe you have sent a wrong Id
+ *              404:
+ *                  description: NotFound | id can be incorrect
+ *              500:
+ *                  description: INTERNAL SERVER ERROR
+ */
 router.get("/:id", ProductController.GetProductById)
 
 module.exports = {
