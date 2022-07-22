@@ -1,4 +1,5 @@
 const { Schema, Types, model } = require("mongoose");
+const { CommentSchema } = require("./public.schema");
 
 const Episodes = new Schema({
     title: { type: String, required: true },
@@ -7,7 +8,7 @@ const Episodes = new Schema({
     time: { type: String, required: true }
 })
 
-const ChapterSchema = new Schema.EventEmitter({
+const ChapterSchema = new Schema({
     title: { type: String, required: true },
     text: { type: String, default: "" },
     episodes: { type: [Episodes], default: [] }
@@ -29,7 +30,7 @@ const CourseSchema = new Schema({
     type : { type: String, default: "free", required : true }, // free - cash - special
     time : { type: String, default: "00:00:00" },
     teacher : { type: Types.ObjectId, ref:"user", required : true },
-    chapter: { type: [ChapterSchema], default: [] },
+    chapters: { type: [ChapterSchema], default: [] },
     students: { type: [ Types.ObjectId ], default: [], ref: "user" }
 })
 
