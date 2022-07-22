@@ -27,6 +27,8 @@ const ProductSchema = new Schema({
     }},
 })
 
+ProductSchema.index({ title: "text", short_text: "text", text: "text" })
+
 module.exports = {
     ProductModel: model("product", ProductSchema)
 }

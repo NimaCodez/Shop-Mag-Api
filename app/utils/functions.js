@@ -60,10 +60,45 @@ function DeleteFileInPublic(FileAddress) {
     }
 }
 
+function CopyObject(object) {
+    return JSON.parse(JSON.stringify(object))
+}
+
+function SetFeatures(body) {
+    const { colors, width, height, length, weight } = body;
+    let features = {}
+    if (!isNaN(+width) || !isNaN(+height) || !isNaN(+length) || !isNaN(+weight)) {
+        features.colors = colors;
+        if (!width) features.width = 0;
+        else features.width = +width;
+        if (!height) features.height = 0;
+        else features.height = +height;
+        if (!length) features.length = 0;
+        else features.length = +length;
+        if (!weight) features.weight = 0;
+        else features.weight = +weight;
+    }
+    return features;
+}
+
+function DeleteInvalidPropertyInObject(data = {}, blackListFields = []) {
+    let nullishData = ["", " ", "0", 0, null, undefined]
+    Object.keys(data).forEach(key => {
+        if (blackListFields.includes(key)) delete data[key]
+        if (typeof data[key] == "string") data[key] = data[key].trim();
+        if (Array.isArray(data[key]) && data[key].length > 0) data[key] = data[key].map(item => item.trim())
+        if (Array.isArray(data[key]) && data[key].length == 0) delete data[key]
+        if (nullishData.includes(data[key])) delete data[key];
+    })
+}
+
 module.exports = {
     GenerateRandomNumber,
     SignAccessToken,
     SignRefreshToken,
     DeleteFileInPublic,
-    ListOfImagesFromRequest
+    ListOfImagesFromRequest,
+    CopyObject,
+    SetFeatures,
+    DeleteInvalidPropertyInObject
 }
