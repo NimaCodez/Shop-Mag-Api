@@ -1,4 +1,5 @@
 const { CourseModel } = require("../../../models/course.model");
+const { CopyObject } = require("../../../utils/functions");
 const Controller = require("../controller");
 
 class CourseController extends Controller {
@@ -14,6 +15,17 @@ class CourseController extends Controller {
                 data : {
                     courses
                 }
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async AddCourse(req, res, next) {
+        try {
+            const data = CopyObject(req.body);
+            return res.status(200).json({
+                data
             })
         } catch (error) {
             next(error)
