@@ -8,6 +8,11 @@ const courseRouter = require("express").Router();
  *      get:
  *          tags: [Course(Admin-Panel)]
  *          summary: Get All courses
+ *          parameters:
+ *              -   in: query
+ *                  name: search
+ *                  type: string
+ *                  description: serach in course by text, title, short_text
  *          responses:
  *              200:
  *                  description: GET OK

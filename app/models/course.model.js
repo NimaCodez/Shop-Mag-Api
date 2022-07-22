@@ -34,6 +34,8 @@ const CourseSchema = new Schema({
     students: { type: [ Types.ObjectId ], default: [], ref: "user" }
 })
 
+CourseSchema.index({ title: "text", short_text: "text", text: "text" })
+
 module.exports = {
     CourseModel: model("course", CourseSchema)
 }
