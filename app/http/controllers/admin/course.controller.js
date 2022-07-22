@@ -1,14 +1,6 @@
 const { CourseModel } = require("../../../models/course.model");
 const Controller = require("../controller");
 
-
-
-
-
-
-
-
-
 class CourseController extends Controller {
     async GetAllCourses(req, res, next) {
         try {
