@@ -17,15 +17,15 @@ const ProductBlackList = {
     LENGTH: "length",
     HEIGHT: "height",
     COLORS: "colors"
-  }
-
+}
+Object.freeze(ProductBlackList)
 
 class ProductController extends Controller {
     async AddProduct(req, res, next) {
         try {
             const productCreateBody = await CreateProductSchema.validateAsync(req.body);
             const images = ListOfImagesFromRequest(req?.files || [], req.body.fileUploadPath)
-            const { title, short_text, text, category, count, price, discount, type, tags, width, height, length, weight } = productCreateBody;
+            const { title, short_text, text, category, count, price, discount, type, tags } = productCreateBody;
             const supplier = req.user._id;
             let features = SetFeatures(req.body)
             const product = await ProductModel.create({
@@ -66,7 +66,6 @@ class ProductController extends Controller {
         try {
             const { id } = req.params;
             const product = await this.FindProductById(id);
-            console.log(product);
             if (!product) throw createHttpError.NotFound("No products with was found! 🐢")
             return res.status(200).json({
                 product
@@ -78,13 +77,20 @@ class ProductController extends Controller {
 
     async EditProduct(req, res, next) {
         try {
-            const data = await CopyObject(req.body)
-            data.images = await ListOfImagesFromRequest(req?.files || [], req.body.fileUploadPath)
-            data.features = await SetFeatures(req.body);
+            const { id } = req.params;
+            const product = await this.FindProductById(id);
+            const data = CopyObject(req.body)
+            data.images = ListOfImagesFromRequest(req?.files || [], req.body.fileUploadPath)
+            data.features = SetFeatures(req.body);
             let BlackListdata = Object.values(ProductBlackList)
             DeleteInvalidPropertyInObject(data, BlackListdata)
-            console.log(data);
-            return res.json(data)
+            const UpdateResult = await ProductModel.updateOne({ _id : product[0]._id }, { $set: data });
+            if (UpdateResult.modifiedCount == 0) throw createHttpError.InternalServerError("Internal Server Error, Update was not done")
+            return res.status(200).json({
+                status: 200,
+                success: true,
+                message: "Product successfully updated 🎉✨ "
+            })
         } catch (error) {
             next(error)
         }
@@ -102,28 +108,27 @@ class ProductController extends Controller {
             const updateProductResult = await ProductModel.updateOne({ _id: product._id }, { $set: data })
             if (updateProductResult.modifiedCount == 0) throw { status: HttpStatus.INTERNAL_SERVER_ERROR, message: "خطای داخلی" }
             return res.status(HttpStatus.OK).json({
-              statusCode: HttpStatus.OK,
-              data : {
-                message: "به روز رسانی باموفقیت انجام شد"
-              }
+                statusCode: HttpStatus.OK,
+                data: {
+                    message: "به روز رسانی باموفقیت انجام شد"
+                }
             })
-          } catch (error) {
+        } catch (error) {
             next(error);
-          }
+        }
     }
-    
+
     async RemoveProduct(req, res, next) {
         try {
             const { id } = req.params;
             const product = await this.FindProductById(id);
-            console.log(product[0]._id);
             const deleteResult = await ProductModel.deleteOne({ _id: product[0]._id })
-            if(deleteResult.deletedCount == 0) throw createHttpError.InternalServerError("Product was not deleted! 🐢")
+            if (deleteResult.deletedCount == 0) throw createHttpError.InternalServerError("Product was not deleted! 🐢")
             return res.status(200).json({
                 status: 200,
                 success: true,
                 message: "Product was deleted successfully 🎉✨"
-            }) 
+            })
         } catch (error) {
             next(error)
         }
@@ -132,7 +137,7 @@ class ProductController extends Controller {
     async FindProductById(productId) {
         const { id } = await MongoIdValidator.validateAsync({ id: productId });
         const product = await ProductModel.aggregate([
-            { $match : { _id: mongoose.Types.ObjectId(id) } },
+            { $match: { _id: mongoose.Types.ObjectId(id) } },
             {
                 $lookup: {
                     from: "users",
@@ -156,13 +161,12 @@ class ProductController extends Controller {
             }
         ]);
         if (!product) return createHttpError.NotFound("Product was not found! 🐢 ");
-        console.log(product);
         return product;
     }
 
     async FindAllProductsWithAggregate() {
         const product = await ProductModel.aggregate([
-            { $match : {} },
+            { $match: {} },
             {
                 $lookup: {
                     from: "users",
