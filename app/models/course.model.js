@@ -28,6 +28,7 @@ const CourseSchema = new Schema({
     price : { type: Number, default : 0 },
     discount : { type: Number, default : 0 },
     type : { type: String, default: "free", required : true }, // free - cash - special
+    status: { type: String, default: "Not Started" }, // Not started , Completed, Holdin
     time : { type: String, default: "00:00:00" },
     teacher : { type: Types.ObjectId, ref:"user", required : true },
     chapters: { type: [ChapterSchema], default: [] },
