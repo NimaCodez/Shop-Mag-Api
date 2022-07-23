@@ -47,7 +47,9 @@ class CourseController extends Controller {
             return res.status(200).json({
                 status: 201,
                 success: true,
-                message: "Course was created successfully 🎉✨"
+                data: {
+                    message: "Course was created successfully 🎉✨"
+                }
             })
         } catch (error) {
             next(error)

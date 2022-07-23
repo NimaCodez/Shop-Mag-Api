@@ -33,7 +33,11 @@ class ProductController extends Controller {
             })
             if (!product) throw createHttpError.InternalServerError("Product was not Added")
             return res.status(200).json({
-                product
+                status: 200,
+                success: true,
+                data: {
+                    product
+                }
             })
         } catch (error) {
             DeleteFileInPublic(req.body.image)
@@ -55,7 +59,11 @@ class ProductController extends Controller {
                 products = await this.FindAllProductsWithAggregate()
             }
             return res.status(200).json({
-                products
+                status: 200,
+                success: true,
+                data: {
+                    products
+                }
             })
         } catch (error) {
             next(error)
@@ -68,7 +76,11 @@ class ProductController extends Controller {
             const product = await this.FindProductById(id);
             if (!product) throw createHttpError.NotFound("No products with was found! 🐢")
             return res.status(200).json({
-                product
+                status: 200,
+                success: true,
+                data: {
+                    product
+                }
             })
         } catch (error) {
             next(error)
@@ -89,32 +101,12 @@ class ProductController extends Controller {
             return res.status(200).json({
                 status: 200,
                 success: true,
-                message: "Product successfully updated 🎉✨ "
-            })
-        } catch (error) {
-            next(error)
-        }
-    }
-
-    async editProduct(req, res, next) {
-        try {
-            const { id } = req.params;
-            const product = await this.findProductById(id)
-            const data = CopyObject(req.body);
-            data.images = ListOfImagesFromRequest(req?.files || [], req.body.fileUploadPath);
-            data.features = SetFeatures(req.body)
-            let blackListFields = Object.values(ProductBlackList);
-            DeleteInvalidPropertyInObject(data, blackListFields)
-            const updateProductResult = await ProductModel.updateOne({ _id: product._id }, { $set: data })
-            if (updateProductResult.modifiedCount == 0) throw { status: HttpStatus.INTERNAL_SERVER_ERROR, message: "خطای داخلی" }
-            return res.status(HttpStatus.OK).json({
-                statusCode: HttpStatus.OK,
                 data: {
-                    message: "به روز رسانی باموفقیت انجام شد"
+                    message: "Product successfully updated 🎉✨ "
                 }
             })
         } catch (error) {
-            next(error);
+            next(error)
         }
     }
 
@@ -127,7 +119,9 @@ class ProductController extends Controller {
             return res.status(200).json({
                 status: 200,
                 success: true,
-                message: "Product was deleted successfully 🎉✨"
+                data: {
+                    message: "Product was deleted successfully 🎉✨"
+                }
             })
         } catch (error) {
             next(error)
