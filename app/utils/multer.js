@@ -32,7 +32,7 @@ const storage = multer.diskStorage({
         if (file?.originalname) {
             const ext = path.extname(file.originalname);
             const fileName = String(CreateImageNameHash(file.originalname) + ext)
-            req.fileName = fileName;
+            req.body.fileName = fileName;
             return cb(null, fileName);
         }
         cb(null, null)
