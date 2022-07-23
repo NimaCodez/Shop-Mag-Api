@@ -1,6 +1,7 @@
 const { CourseModel } = require("../../../models/course.model");
 const { CopyObject } = require("../../../utils/functions");
 const Controller = require("../controller");
+const path = require("path");
 
 class CourseController extends Controller {
     async GetAllCourses(req, res, next) {
@@ -23,9 +24,12 @@ class CourseController extends Controller {
 
     async AddCourse(req, res, next) {
         try {
+            const { fileUploadPath, fileName } = req.body;
+            const image = path.join(fileUploadPath, fileName).replace(/\\/g, "/")
+            const { title, short_text, text, tags, cateory, price, discount } = req.body;
             const data = CopyObject(req.body);
             return res.status(200).json({
-                data
+                title, short_text, text, tags, cateory, price, discount, image
             })
         } catch (error) {
             next(error)

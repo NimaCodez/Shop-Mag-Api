@@ -45,7 +45,7 @@ async function SignRefreshToken(userId) {
 }
 
 function ListOfImagesFromRequest(files, fileUploadPath) {
-    if(files?.length) {
+    if(files?.length > 0) {
         return (files.map(file => path.join(fileUploadPath, file.filename))).map(item => item.replace(/\\/gi, "/"))
     }
     else {
