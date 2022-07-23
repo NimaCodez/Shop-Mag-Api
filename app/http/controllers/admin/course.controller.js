@@ -2,6 +2,8 @@ const { CourseModel } = require("../../../models/course.model");
 const { CopyObject } = require("../../../utils/functions");
 const Controller = require("../controller");
 const path = require("path");
+const { CreateCourseSchema } = require("../../validators/admin/course.schema");
+const createHttpError = require("http-errors");
 
 class CourseController extends Controller {
     async GetAllCourses(req, res, next) {
@@ -24,12 +26,45 @@ class CourseController extends Controller {
 
     async AddCourse(req, res, next) {
         try {
+            await CreateCourseSchema.validateAsync(req.body);
             const { fileUploadPath, fileName } = req.body;
             const image = path.join(fileUploadPath, fileName).replace(/\\/g, "/")
-            const { title, short_text, text, tags, cateory, price, discount } = req.body;
-            const data = CopyObject(req.body);
+            const { title, short_text, text, tags, category, price, discount } = req.body;
+            const teacher = req.user._id
+            const course = await CourseModel.create({
+                title,
+                short_text,
+                text, tags,
+                category,
+                price,
+                discount,
+                image,
+                time: "00:00:00",
+                status: "Not Started",
+                teacher
+            })
+            if (!course?._id) throw createHttpError.InternalServerError("Course was not added")
             return res.status(200).json({
-                title, short_text, text, tags, cateory, price, discount, image
+                status: 201,
+                success: true,
+                message: "Course was created successfully 🎉✨"
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async GetCourseById(req, res, next) {
+        try {
+            const { id } = req.params;
+            const course = await CourseModel.findOne({ _id: id });
+            if (!course) throw createHttpError.NotFound("No course was found with that Is")
+            return res.status(200).json({
+                status: 200,
+                success: true,
+                data: {
+                    course
+                }
             })
         } catch (error) {
             next(error)
