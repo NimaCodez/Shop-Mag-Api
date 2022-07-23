@@ -21,7 +21,9 @@ class CategoryController extends Controller {
             return res.status(201).json({
                 status: 201,
                 success: true,
-                message: "Category was created successfully 🎉✨"
+                data: {
+                    message: "Category was created successfully 🎉✨"
+                }
             })
         } catch (error) {
             next(error);
@@ -40,7 +42,7 @@ class CategoryController extends Controller {
         try {
             await MongoIdValidator.validateAsync(req.params)
             const { id } = req.params;
-            const data = {...req.body};
+            const data = { ...req.body };
             const findResult = await this.CheckCategoryExistenceById(id);
             if (!findResult) throw createError.NotFound("Category does not exist")
             const updateResult = await CategoryModel.updateOne({ _id: id }, { $set: data })
@@ -48,7 +50,9 @@ class CategoryController extends Controller {
             return res.status(200).json({
                 status: 200,
                 success: true,
-                message: "Category Edited Successfully! 🎉✨"
+                data: {
+                    message: "Category Edited Successfully! 🎉✨"
+                }
             })
         } catch (error) {
             next(error);
@@ -61,10 +65,12 @@ class CategoryController extends Controller {
             const { id } = req.params;
             const findResult = await this.CheckCategoryExistenceById(id);
             if (!findResult) throw createError.NotFound("Category does not exist")
-            const deleteResult = await CategoryModel.deleteMany({ $or: [
-                { _id: mongoose.Types.ObjectId(id) },
-                { parent: mongoose.Types.ObjectId(id) }
-            ]});
+            const deleteResult = await CategoryModel.deleteMany({
+                $or: [
+                    { _id: mongoose.Types.ObjectId(id) },
+                    { parent: mongoose.Types.ObjectId(id) }
+                ]
+            });
             if (deleteResult.deletedCount == 0) throw { status: 500, success: false, message: "Category was not deleted from database" }
             return res.status(200).json({
                 statius: 200,
@@ -85,7 +91,7 @@ class CategoryController extends Controller {
             const category = await CategoryModel.aggregate([
                 {
                     $match: {
-                        _id : mongoose.Types.ObjectId(id)
+                        _id: mongoose.Types.ObjectId(id)
                     }
                 },
                 {
@@ -159,7 +165,7 @@ class CategoryController extends Controller {
     async GetAllCategoriesWithoutPopulate(req, res, next) {
         try {
             const categories = await CategoryModel.aggregate([
-                {$match: {}}, {$project: { __v: 0 }}
+                { $match: {} }, { $project: { __v: 0 } }
             ])
             return res.status(200).json({
                 status: 200,

@@ -72,22 +72,20 @@
  * @swagger
  *  /admin/courses/list:
  *      get:
- *          tags: [Course(Admin-Panel)]
- *          summary: Get All courses
+ *          tags: [Course(AdminPanel)]
+ *          summary: get all of courses
  *          parameters:
  *              -   in: query
  *                  name: search
  *                  type: string
- *                  description: serach in course by text, title, short_text
- *          responses:
+ *                  description: search in course text, title, short_text
+ *          responses :
  *              200:
- *                  description: GET OK
- *              400:
- *                  description: Bad Request
- *              404:
- *                  description: Broken Url or and courses were not found
- *              500:
- *                  description: INTERNAL SERVER ERROR
+ *                  description: success
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              $ref: '#/definitions/ListOfCourses'
  */
 
 /**
@@ -105,6 +103,55 @@
  *          responses:
  *              201:
  *                  descrition: CREATED
+ */
+
+/**
+ * @swagger
+ *  definitions:
+ *      ListOfCourses:
+ *          type: object
+ *          properties:
+ *              statusCode: 
+ *                  type: integer
+ *                  example: 200
+ *              data:
+ *                  type: object
+ *                  properties:
+ *                      courses:
+ *                          type: array
+ *                          items:
+ *                              type: object
+ *                              properties:
+ *                                  _id:
+ *                                      type: string
+ *                                      example: "62822e4ff68cdded54aa928d"
+ *                                  title:
+ *                                      type: string
+ *                                      example: "title of course"
+ *                                  short_text:
+ *                                      type: string
+ *                                      example: "summary text of course"
+ *                                  text:
+ *                                      type: string
+ *                                      example: "text and describe of course"
+ *                                  status:
+ *                                      type: string
+ *                                      example: "notStarted | Completed | Holding"
+ *                                  time:
+ *                                      type: string
+ *                                      example: "01:22:34"
+ *                                  price:
+ *                                      type: integer
+ *                                      example: 250,000
+ *                                  discount:
+ *                                      type: interger
+ *                                      example: 20
+ *                                  studendtCount:
+ *                                      type: integer
+ *                                      example: 340
+ *                                  teacher:
+ *                                      type: string
+ *                                      example: "erfan yousefi"
  */
 
 /**
