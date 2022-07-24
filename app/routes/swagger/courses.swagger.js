@@ -111,7 +111,7 @@
  *      ListOfCourses:
  *          type: object
  *          properties:
- *              statusCode: 
+ *              status:
  *                  type: integer
  *                  example: 200
  *              data:
