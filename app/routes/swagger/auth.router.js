@@ -35,12 +35,6 @@
 
 /**
  * @swagger
- *  tags: 
- *      name: AuthRoutes
- *      description: User Auth Routes
- */
-/**
- * @swagger
  *  /user/getotp:
  *      post:
  *          summary: Generates Otp For User 

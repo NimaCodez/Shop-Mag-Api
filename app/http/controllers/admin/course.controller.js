@@ -11,12 +11,12 @@ class CourseController extends Controller {
         try {
             const { search } = req.query;
             let courses;
-            if (search) courses = await CourseModel.find({ $text: { $search: search }}).sort({ _id: -1 })
-            else courses = await CourseModel.find({}).sort({ _id : -1 });
+            if (search) courses = await CourseModel.find({ $text: { $search: search } }).sort({ _id: -1 })
+            else courses = await CourseModel.find({}).sort({ _id: -1 });
             return res.status(200).json({
                 status: 200,
                 success: true,
-                data : {
+                data: {
                     courses
                 }
             })
@@ -76,11 +76,16 @@ class CourseController extends Controller {
 
     async AddChapter(req, res, next) {
         try {
-            const { id, title, text } = req.body;
-            await this.FindCourseById(id)
-            const SaveChapterResult = await CourseModel.updateOne({ _id: id }, { $push: {
-                chapters: { title, text, episodes: [] }
-            }})
+            const { id, title, text } = req.body
+            console.log(id, title, text)
+            const course = await this.FindCourseById(id)
+            console.log(course)
+            const SaveChapterResult = await CourseModel.updateOne({ _id: id }, {
+                $push: {
+                    chapters: { title, text, episodes: [] }
+                }
+            })
+            console.log("Save: ", SaveChapterResult)
             if (SaveChapterResult.modifiedCount == 0) throw createHttpError.InternalServerError("Chapter was not added")
             return res.status(200).json({
                 status: 200,
@@ -95,17 +100,13 @@ class CourseController extends Controller {
     }
 
     async FindCourseById(id) {
-        try {
-            if (!mongoose.isValidObjectId(id)) throw createHttpError.BadRequest("Id is not correct")
-            const course = await CourseModel.findById(id);
-            if (!course) throw createHttpError.NotFound("No Course was found! ")
-            return course;
-        } catch (error) {
-            next(error)
-        }
-    }   
+        if (!mongoose.isValidObjectId(id)) throw createHttpError.BadRequest("Id is not correct")
+        const course = await CourseModel.findById(id);
+        if (!course) throw createHttpError.NotFound("No Course was found! ")
+        return course;
+    }
 }
 
 module.exports = {
-    CourseController : new CourseController()
+    CourseController: new CourseController()
 }
