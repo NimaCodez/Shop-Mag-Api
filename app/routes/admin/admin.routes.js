@@ -8,7 +8,9 @@ const adminRouter = require('express').Router();
  * @swagger
  *  tags:
  *      -   name: Admin-Panel
- *          description: Admin ROUTES With pro Accessibility
+ *          description: Admin ROUTES With pro Accessibility 
+ *      -   name: AuthRoutes
+ *          description: User Auth Routes
  *      -   name: Course(Admin-Panel)
  *          description: Admin routes of courses for management.
  *      -   name: Product(Admin-Panel)

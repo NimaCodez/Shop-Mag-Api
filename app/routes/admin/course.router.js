@@ -10,8 +10,7 @@ courseRouter.post("/add", UploadFile.single("image"), StringToArray("tags"), Cou
 
 courseRouter.get("/:id", CourseController.GetCourseById) // get one course
 
-
-// courseRouter.put() // Create new chapter
+courseRouter.put("/add-chapter", CourseController.AddChapter) // Create new chapter
 // courseRouter.put() // Create new episode
 // courseRouter.delete() // remove a course
 // courseRouter.patch() // Edit a course
