@@ -30,8 +30,8 @@ class ChapterController extends Controller {
     
     async ChaptersOfCourse(req, res, next) {
         try {
-            const { chapterID } = req.params;
-            const chapters = await this.GetChaptersOfCourse(chapterID)
+            const { courseID } = req.params;
+            const chapters = await this.GetChaptersOfCourse(courseID)
             return res.status(200).json({
                 status: 200,
                 success: true,
@@ -45,12 +45,14 @@ class ChapterController extends Controller {
     }
 
     async GetChaptersOfCourse(id) {
+        await CourseController.FindCourseById(id)
         const chapters = await CourseModel.findOne({ _id: mongoose.Types.ObjectId(id) }, { chapters: 1, title: 1 })
         if (!chapters) createHttpError.NotFound("No Course was Found with this Id")
         return chapters;
     }
-
+    
     async CheckExistChapter(id) {
+        await CourseController.FindCourseById(id)
         const chapter = await CourseModel.findOne({ "chapters._id" : id }, { "chapters.$": 1 });
         if (chapter) return createHttpError.NotFound("No Chapter with this Id was found! ")
         return chapter;
