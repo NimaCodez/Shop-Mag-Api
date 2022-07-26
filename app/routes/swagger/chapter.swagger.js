@@ -73,13 +73,13 @@
 
 /**
  * @swagger
- *  /admin/chapter/list/{chapterID}:
+ *  /admin/chapter/list/{courseID}:
  *      get:
  *          tags: [Chapter(Admin-Panel)]
  *          summary: Create new chapter four a course
  *          parameters:
  *              -   in: path
- *                  name: chapterID
+ *                  name: courseID
  *                  type: string
  *                  required: true
  *          responses:

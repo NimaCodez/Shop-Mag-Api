@@ -75,8 +75,9 @@ class CourseController extends Controller {
     }
 
     async FindCourseById(id) {
-        if (!mongoose.isValidObjectId(id)) throw createHttpError.BadRequest("Id is not correct")
-        const course = await CourseModel.findById(id);
+        if (!mongoose.isValidObjectId(mongoose.Types.ObjectId(id))) throw createHttpError.BadRequest("Id is not correct")
+        const course = await CourseModel.findOne({ _id: mongoose.Types.ObjectId(id) });
+        console.log(course);
         if (!course) throw createHttpError.NotFound("No Course was found! ")
         return course;
     }
