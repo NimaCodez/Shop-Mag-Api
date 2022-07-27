@@ -1,6 +1,7 @@
 const createHttpError = require("http-errors");
 const { default: mongoose } = require("mongoose");
 const { CourseModel } = require("../../../models/course.model");
+const { DeleteInvalidPropertyInObject } = require("../../../utils/functions");
 const Controller = require("../controller");
 const { CourseController } = require("./course.controller");
 
@@ -10,7 +11,7 @@ class ChapterController extends Controller {
     async AddChapter(req, res, next) {
         try {
             const { id, title, text } = req.body;
-            // Cheks if course exists or not
+            // Checks if course exists or not
             await CourseController.FindCourseById(id)
             const SaveChapterResult = await CourseModel.updateOne({ _id: id }, {
                 $push: {
@@ -61,7 +62,7 @@ class ChapterController extends Controller {
         return chapter;
     }
 
-    // TODO: Complete this code and write swagger + Debug
+    // This method is used to delete a chapter from a course. params: Chapter's _id.
     async RemoveChapterById(req, res, next) {
         try {
             const { chapterID } = req.params;
@@ -86,6 +87,27 @@ class ChapterController extends Controller {
         }
     }
 
+    async UpdateChapterByid(req, res, next) {
+        try {
+            const { chapterID } = req.params;
+            await this.GetOneChapter(chapterID)
+            const data = {...req.body};
+            DeleteInvalidPropertyInObject(data, ["_id"])
+            const UpdateChapterResult = await CourseModel.updateOne({ "chapters._id" : chapterID}, {
+                $set: { "chapters.$": data }
+            })
+            if (UpdateChapterResult.modifiedCount == 0) throw createHttpError.InternalServerError("Chapter was not updated")
+            return res.status(200).json({
+                status: 200,
+                success: true,
+                data: {
+                    message: "Chapter was updated successfully 🎉✨"
+                }
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
 }
 
 module.exports = {
