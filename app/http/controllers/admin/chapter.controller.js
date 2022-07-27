@@ -5,7 +5,7 @@ const Controller = require("../controller");
 const { CourseController } = require("./course.controller");
 
 class ChapterController extends Controller {
-    
+
     // This function takes user's Input (id, title, text) and creates a chapter with given data in course
     async AddChapter(req, res, next) {
         try {
@@ -29,7 +29,7 @@ class ChapterController extends Controller {
             next(error)
         }
     }
-    
+
     // This function returns all the saved chapters for a course.
     async ChaptersOfCourse(req, res, next) {
         try {
@@ -54,34 +54,40 @@ class ChapterController extends Controller {
         if (!chapters) createHttpError.NotFound("No Course was Found with this Id")
         return chapters;
     }
-    
+
     async GetOneChapter(id) {
-        await CourseController.FindCourseById(id)
-        const chapter = await CourseModel.findOne({ "chapters._id" : id }, { "chapters.$": 1 });
+        const chapter = await CourseModel.findOne({ "chapters._id": id }, { "chapters.$": 1 });
         if (chapter) return createHttpError.NotFound("No Chapter with this Id was found! ")
         return chapter;
     }
 
     // TODO: Complete this code and write swagger + Debug
-    async RemoveChapterByI(id) {
-        const { courseID } = req.params;
-        const chapter = await this.GetOneChapter(courseID)
-        const UpdateChapterResult = await CourseModel.updateOne({ "chapters._id": courseID }, {
-            $pull: { "chapters._id": courseID }
-        })
-
-        if(UpdateChapterResult.modifiedCount == 0) throw createHttpError.InternalServerError("Update was not done! ")
-        return res.status(200).json({
-            status: 200,
-            success: true,
-            data: {
-                message: "Update was successfully done! 🔥✨🎉"
-            }
-        })
+    async RemoveChapterById(req, res, next) {
+        try {
+            const { chapterID } = req.params;
+            const chapter = await this.GetOneChapter(chapterID)
+            const UpdateChapterResult = await CourseModel.updateOne({ "chapters._id": chapterID }, {
+                $pull: {
+                    chapters: {
+                        _id: chapterID
+                    }
+                }
+            })
+            if (UpdateChapterResult.modifiedCount == 0) throw createHttpError.InternalServerError("Update was not done! ")
+            return res.status(200).json({
+                status: 200,
+                success: true,
+                data: {
+                    message: "Update was successfully done! 🔥✨🎉"
+                }
+            })
+        } catch (error) {
+            next(error)
+        }
     }
-    
+
 }
 
 module.exports = {
-    ChapterController : new ChapterController(),
+    ChapterController: new ChapterController(),
 }
