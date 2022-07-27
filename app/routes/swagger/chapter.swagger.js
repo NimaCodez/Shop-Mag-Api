@@ -17,6 +17,15 @@
  *                  text:
  *                      type: string
  *                      example: description for this chapter
+ *          EditChapter:
+ *              type: object
+ *              properties:
+ *                  title:
+ *                      type: string
+ *                      example: Chapter 1 - zh Js
+ *                  text:
+ *                      type: string
+ *                      example: description for this chapter
  */
 
 /**
@@ -102,6 +111,35 @@
  *                  name: chapterID
  *                  type: string
  *                  required: true
+ *          responses:
+ *              200:
+ *                  description: SUCCESS
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              $ref: '#/definitions/publicDefinition'
+ */
+
+/**
+ * @swagger
+ *  /admin/chapter/update/{chapterID}:
+ *      patch:
+ *          tags: [Chapter(Admin-Panel)]
+ *          summary: update a chapter's detail.
+ *          parameters:
+ *              -   in: path
+ *                  name: chapterID
+ *                  type: string
+ *                  required: true
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/x-www-form-urlencoded:
+ *                      schema:
+ *                          $ref: '#/components/schemas/EditChapter'
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/EditChapter'
  *          responses:
  *              200:
  *                  description: SUCCESS
