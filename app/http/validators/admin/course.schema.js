@@ -3,8 +3,8 @@ const createError = require("http-errors");
 const { MongoIDPattern } = require("../../../utils/constants");
 
 const CreateCourseSchema = Joi.object({
-    title : Joi.string().min(3).max(30).error(createError.BadRequest("عنوان دوره صحیح نمیباشد")),
-    text: Joi.string().error(createError.BadRequest("متن ارسال شده صحیح نمیباشد")),
+    title : Joi.string().min(3).max(30).error(createError.BadRequest("Course title is not correct")),
+    text: Joi.string().error(createError.BadRequest("Course text is not correct")),
     short_text: Joi.string().error(createError.BadRequest("متن ارسال شده صحیح نمیباشد")),
     tags: Joi.array().min(0).max(20).error(createError.BadRequest("برچسب ها نمیتواند بیشتر از 20 ایتم باشد")),
     category: Joi.string().regex(MongoIDPattern).error(createError.BadRequest("دسته بندی مورد نظر یافت نشد")),
@@ -15,6 +15,17 @@ const CreateCourseSchema = Joi.object({
     fileUploadPath : Joi.allow()
 });
 
+const CreateEpisodeSchema = Joi.object({
+    title : Joi.string().min(3).max(30).error(createError.BadRequest("عنوان دوره صحیح نمیباشد")),
+    text: Joi.string().error(createError.BadRequest("متن ارسال شده صحیح نمیباشد")),
+    type: Joi.string().regex(/(lock|unlock|)/i),
+    time: Joi.string().regex(/[0-9]{2}\:[0-9]{2}\:[0-9]{2}/i),
+    chapterID: Joi.string().regex(MongoIDPattern).error(createError.BadRequest("Chapter id is not correct")),
+    courseID: Joi.string().regex(MongoIDPattern).error(createError.BadRequest("Course Id is not corect")),
+    fileUploadPath : Joi.allow()
+});
+
 module.exports = {
     CreateCourseSchema,
+    CreateEpisodeSchema
 }
