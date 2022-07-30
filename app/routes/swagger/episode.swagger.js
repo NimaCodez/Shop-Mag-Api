@@ -9,7 +9,7 @@
  *                  -   chapterID
  *                  -   title
  *                  -   text
- *                  -   time
+ *                  -   video
  *                  -   type
  *              properties:
  *                  courseID:
@@ -30,10 +30,10 @@
  *                          -   unlock
  *                          -   lock
  *                      description: select episode type (unlock or lock) 
- *                  time:
+ *                  video:
  *                      type: string
- *                      description: test
- *                      example: 00:12:23
+ *                      description: Episode video file
+ *                      format: binary
  */
 
 /**
@@ -45,10 +45,7 @@
  *          requestBody:
  *              required: true
  *              content:
- *                  application/x-www-form-urlencoded:
- *                      schema:
- *                          $ref: '#components/schemas/AddEpisode'
- *                  application/json:
+ *                  multipart/form-data:
  *                      schema:
  *                          $ref: '#components/schemas/AddEpisode'
  *          responses:

@@ -16,13 +16,12 @@ const CreateCourseSchema = Joi.object({
 });
 
 const CreateEpisodeSchema = Joi.object({
-    title : Joi.string().required().error(createError.BadRequest("Title is required")).min(3).max(30).error(createError.BadRequest("Episode title can'be lass than 3 and more than 30 charecters.")),
+    title : Joi.string().required().error(createError.BadRequest("Episode title can'be lass than 3 and more than 30 charecters.")),
     text: Joi.string().error(createError.BadRequest("Sent text is not corect")),
     type: Joi.string().regex(/(lock|unlock|)/i),
-    time: Joi.string().regex(/[0-9]{2}\:[0-9]{2}\:[0-9]{2}/i),
     chapterID: Joi.string().regex(MongoIDPattern).error(createError.BadRequest("Chapter id is not correct")),
     courseID: Joi.string().regex(MongoIDPattern).error(createError.BadRequest("Course Id is not corect")),
-    fileName: Joi.allow(),
+    fileName: Joi.string().regex(/(\.mp4|\.mkv|\.mov|\.avi|\.)$/).error(createError.BadRequest("Image format is not correct")),
     fileUploadPath : Joi.allow()
 });
 
