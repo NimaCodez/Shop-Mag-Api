@@ -29,7 +29,7 @@
  *                      enum:
  *                          -   unlock
  *                          -   lock
- *                      description: select episode type (unlock or lock)
+ *                      description: select episode type (unlock or lock) 
  *                  time:
  *                      type: string
  *                      description: test
