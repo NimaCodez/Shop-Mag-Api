@@ -53,6 +53,20 @@ function ListOfImagesFromRequest(files, fileUploadPath) {
     }
 }
 
+function getTime(seconds) {
+    let total = Math.round(seconds) / 60;
+    let [minutes, percent] = String(total).split(".");
+    second = Math.round((percent * 60) / 100).toString().substring(0, 2);
+    let houre = 0;
+    if (minutes > 60) {
+        total = minutes / 60
+         let [h1, percent] = String(total).split(".");
+         houre = h1,
+         minutes = Math.round((percent * 60) / 100).toString().substring(0, 2);
+    }
+    return (houre + ":" + minutes + ":" +second)
+}
+
 function DeleteFileInPublic(FileAddress) {
     if (FileAddress) {
         const FilePath = path.join(__dirname, "..", "..", "public", FileAddress)
@@ -100,5 +114,6 @@ module.exports = {
     ListOfImagesFromRequest,
     CopyObject,
     SetFeatures,
-    DeleteInvalidPropertyInObject
+    DeleteInvalidPropertyInObject,
+    getTime,
 }

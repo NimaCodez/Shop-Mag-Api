@@ -48,6 +48,15 @@ function FileFilter(req, file, cb) {
     return cb(createHttpError.BadRequest("File Format is not correct! 🗿🗿 "))
 }
 
+function VideoFilter(req, file, cb) {
+    const MimeTypes =  [".mp4", ".avi", ".mkv", ".mov"]
+    const Ext = path.extname(file.originalname)
+    if (MimeTypes.includes(Ext)) {
+        return cb(null, true)
+    }
+    return cb(createHttpError.BadRequest("File Format is not correct! 🗿🗿 "))
+}
+
 const maxSize = 2 * 1000 * 1000
 const UploadFile = multer({
     storage,
@@ -57,7 +66,17 @@ const UploadFile = multer({
     }
 })
 
+const VideoMaxSize = 300 * 1000 * 1000
+const UploadVideo = multer({
+    storage,
+    fileFilter: VideoFilter,
+    limits: {
+        fileSize: VideoMaxSize
+    }
+})
+
 module.exports = {
     UploadFile,
+    UploadVideo,
     CreateImageNameHash,
 }
