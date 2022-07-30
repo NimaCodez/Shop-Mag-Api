@@ -11,7 +11,7 @@ class BlogController extends Controller {
         try {
             const BlogDataBody = await CreateBlogSchema.validateAsync(req.body);
             const { title, short_text, text, category, tags } = req.body;
-            req.body.image = path.join(BlogDataBody.fileUploadPath, req.fileName).replace(/\\/gi, "/")
+            req.body.image = path.join(BlogDataBody.fileUploadPath, req.body.fileName).replace(/\\/gi, "/")
             const image = req.body.image;
             const author = req.user._id;
             const CreateResult = await BlogModel.create({ author, title, short_text, text, image, category, tags })
@@ -74,8 +74,8 @@ class BlogController extends Controller {
         try {
             const { id } = req.params;
             await this.FindBlog(id);
-            if (req?.body?.fileUploadPath && req?.fileName) {
-                req.body.image = path.join(req?.body?.fileUploadPath, req.fileName).replace(/\\/gi, "/");
+            if (req?.body?.fileUploadPath && req?.body.fileName) {
+                req.body.image = path.join(req?.body?.fileUploadPath, req.body.fileName).replace(/\\/gi, "/");
             }
             const data = req.body;
             let nullishData = ["", " ", "0", 0, null, undefined];

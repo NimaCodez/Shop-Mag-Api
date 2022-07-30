@@ -22,6 +22,7 @@ const CreateEpisodeSchema = Joi.object({
     time: Joi.string().regex(/[0-9]{2}\:[0-9]{2}\:[0-9]{2}/i),
     chapterID: Joi.string().regex(MongoIDPattern).error(createError.BadRequest("Chapter id is not correct")),
     courseID: Joi.string().regex(MongoIDPattern).error(createError.BadRequest("Course Id is not corect")),
+    fileName: Joi.allow(),
     fileUploadPath : Joi.allow()
 });
 
