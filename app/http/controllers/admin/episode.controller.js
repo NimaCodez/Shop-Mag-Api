@@ -4,26 +4,6 @@ const path = require("path");
 const { default: getVideoDurationInSeconds } = require("get-video-duration");
 const { getTime } = require("../../../utils/functions");
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class EpisodeController extends Controller {
     async AddNewEpisode(req, res, next) {
         try {
