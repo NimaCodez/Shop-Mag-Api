@@ -34,6 +34,25 @@
  *                      type: string
  *                      description: Episode video file
  *                      format: binary
+ *          EditEpisode:
+ *              type: object
+ *              properties:
+ *                  title:
+ *                      type: string
+ *                      example: Episode's title
+ *                  text:
+ *                      type: string
+ *                      example: Description about this episode
+ *                  type:
+ *                      type: string
+ *                      enum:
+ *                          -   unlock
+ *                          -   lock
+ *                      description: select episode type (unlock or lock) 
+ *                  video:
+ *                      type: string
+ *                      description: Episode video file
+ *                      format: binary
  */
 
 /**
@@ -49,10 +68,50 @@
  *                      schema:
  *                          $ref: '#components/schemas/AddEpisode'
  *          responses:
- *              200:
+ *              201:
  *                  description: SUCCESS
  *                  content:
  *                      application/json:
  *                              schema:
  *                                  $ref: '#/definitions/publicDefinition'
+ */
+
+/**
+ * @swagger
+ *  /admin/episode/remove/{episodeID}:
+ *      delete:
+ *          tags: [Episode(Admin-Panel)]
+ *          summary: remove a video from a chapter
+ *          parameters:
+ *              -   in: path
+ *                  name: episodeID
+ *                  type: string
+ *                  required: true
+ *          responses:
+ *              200:
+ *                  descriptoion: OK
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              $ref: '#/definitions/publicDefinition'
+ */
+
+/**
+ * @swagger
+ *  /admin/episode/update/{episodeID}:
+ *      patch:
+ *          tags: [Episode(Admin-Panel)]
+ *          summary: Edit one episode in a chapter
+ *          requestBody:
+ *              content:
+ *                  multipart/form-data:
+ *                      schema:
+ *                          $ref: '#/components/schemas/EditEpisode'
+ *          responses:
+ *              200:
+ *                  description: SUCCESS
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              $ref: '#/definitions/publicDefinition'
  */
