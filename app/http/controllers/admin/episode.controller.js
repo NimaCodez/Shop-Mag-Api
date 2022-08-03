@@ -2,14 +2,12 @@ const { CreateEpisodeSchema } = require("../../validators/admin/course.schema");
 const Controller = require("../controller");
 const path = require("path");
 const { default: getVideoDurationInSeconds } = require("get-video-duration");
-const { getTime } = require("../../../utils/functions");
+const { getTime, DeleteInvalidPropertyInObject, CopyObject } = require("../../../utils/functions");
 const { CourseModel } = require("../../../models/course.model");
 const createHttpError = require("http-errors");
 const { MongoIdValidator } = require("../../validators/public");
-const { default: mongoose } = require("mongoose");
 
 class EpisodeController extends Controller {
-    
     async AddNewEpisode(req, res, next) {
         try {
             const { title, text, type, chapterID, courseID, fileName, fileUploadPath } = await CreateEpisodeSchema.validateAsync(req.body);
@@ -24,7 +22,7 @@ class EpisodeController extends Controller {
                     "chapters.$.episodes": episode
                 }
             })
-            if(CreateEpisodeResult.modifiedCount == 0) throw createHttpError.InternalServerError("Episode was not added! ")
+            if (CreateEpisodeResult.modifiedCount == 0) throw createHttpError.InternalServerError("Episode was not added! ")
             return res.status(200).json({
                 status: 200,
                 success: true,
@@ -39,10 +37,7 @@ class EpisodeController extends Controller {
 
     async RemoveEpisode(req, res, next) {
         try {
-            // await mongoose.isValidObjectId(req.params.episodeID)  
-            const { episodeID } = req.params;
-            console.log(episodeID)
-            console.log(mongoose.Types.ObjectId(episodeID))
+            const { id: episodeID } = await MongoIdValidator.validateAsync({ id: req.params.episodeID })
             const DeleteResult = await CourseModel.updateOne({ "chapters.episodes._id": episodeID }, {
                 $pull: {
                     "chapters.$.episodes": {
@@ -50,7 +45,7 @@ class EpisodeController extends Controller {
                     }
                 }
             })
-            if(DeleteResult.modifiedCount == 0) throw createHttpError.InternalServerError("Episode was not deleted! ")
+            if (DeleteResult.modifiedCount == 0) throw createHttpError.InternalServerError("Episode was not deleted! ")
             return res.status(200).json({
                 status: 200,
                 success: true,
@@ -63,6 +58,63 @@ class EpisodeController extends Controller {
         }
     }
 
+    async EditEpisode(req, res, next) {
+        try {
+            const { id: episodeID } = await MongoIdValidator.validateAsync({ id: req.params.episodeID });
+            console.log("EpisodeID conrtoller: ", episodeID);
+            const episode = await this.GetOneEpisode(episodeID)
+            console.log("Episode Controller 68: ", episode);
+            const { fileName, fileUploadPath } = req.body;
+            let blackListFields = ["_id"]
+            if (fileName && fileUploadPath) {
+                const fileAddress = path.join(fileUploadPath, fileName)
+                req.body.videoAddress = fileAddress.replace(/\\/g, "/");
+                const videoUrl = `${process.env.BASE_URL}:${process.env.APP_PORT}/${req.body.videoAddress}`
+                const seconds = await getVideoDurationInSeconds(videoUrl);
+                req.body.time = getTime(seconds)
+                blackListFields.push("fileName")
+                blackListFields.push("fileUploadPath")
+            } else {
+                blackListFields.push("time")
+                blackListFields.push("videoAddress")
+            }
+            console.log("BlackLists: ", blackListFields);
+            const data = req.body;f
+            DeleteInvalidPropertyInObject(data, blackListFields)
+            console.log("data: ", data);
+            const newEpisode = {
+                ...episode,
+                ...data
+            }
+            console.log("newEpisode: ", newEpisode)
+            const EditResult = await CourseModel.updateOne({ "chapters.episodes._id": episodeID }, {
+                $set: {
+                    "chapters.$.episodes": newEpisode
+                }
+            })
+            if (!EditResult.modifiedCount) throw createHttpError.InternalServerError("Episode was not edited! ")
+            return res.status(200).json({
+                status: 200,
+                success: true,
+                data: {
+                    message: "Episode was edited successfully! 🎉✨🔥"
+                }
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+    
+    async GetOneEpisode(episodeID) {
+        const course = await CourseModel.findOne({ "chapters.epsiodes._id": episodeID })
+        console.log("Course: ", course)
+        if (!course) throw createHttpError.NotFound("No epsiode was found!")
+        const episode = await course?.chapters?.[0].episodes?.[0]
+        console.log("Episode ", episode)
+        if (!episode) throw createHttpError.NotFound("No episode was found 2")
+        return CopyObject(episode)
+    }
+    
 }
 
 module.exports = {

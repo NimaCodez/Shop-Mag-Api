@@ -102,6 +102,11 @@
  *      patch:
  *          tags: [Episode(Admin-Panel)]
  *          summary: Edit one episode in a chapter
+ *          parameters:
+ *              -   in: path
+ *                  name: episodeID
+ *                  type: string
+ *                  required: true
  *          requestBody:
  *              content:
  *                  multipart/form-data:

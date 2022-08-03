@@ -103,7 +103,7 @@
 /**
  * @swagger
  *  /admin/chapter/remove/{chapterID}:
- *      patch:
+ *      delete:
  *          tags: [Chapter(Admin-Panel)]
  *          summary: Deletes a chapter from a course
  *          parameters:
