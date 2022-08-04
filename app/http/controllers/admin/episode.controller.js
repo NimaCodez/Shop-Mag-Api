@@ -79,7 +79,7 @@ class EpisodeController extends Controller {
                 blackListFields.push("videoAddress")
             }
             console.log("BlackLists: ", blackListFields);
-            const data = req.body;f
+            const data = req.body;
             DeleteInvalidPropertyInObject(data, blackListFields)
             console.log("data: ", data);
             const newEpisode = {
@@ -106,7 +106,7 @@ class EpisodeController extends Controller {
     }
     
     async GetOneEpisode(episodeID) {
-        const course = await CourseModel.findOne({ "chapters.epsiodes._id": episodeID })
+        const course = await CourseModel.findOne({ "chapters.episodes._id": episodeID })
         console.log("Course: ", course)
         if (!course) throw createHttpError.NotFound("No epsiode was found!")
         const episode = await course?.chapters?.[0].episodes?.[0]

@@ -25,9 +25,17 @@ const ProductSchema = new Schema({
         colors : [],
         madein : ""
     }},
+}, {
+    toJSON: {
+        virtuals: true
+    }
 })
 
 ProductSchema.index({ title: "text", short_text: "text", text: "text" })
+
+ProductSchema.virtual("ImagesURL").get(function(){
+    return this.images.map(image => `${process.env.BASE_URL}:${process.env.APP_PORT}/${image}`)
+})
 
 module.exports = {
     ProductModel: model("product", ProductSchema)
