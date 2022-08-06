@@ -100,7 +100,20 @@ class CourseController extends Controller {
                 data.image = path.join(req.get("host"),fileUploadPath, fileName).replace(/\\/gi, "/");
                 DeleteFileInPublic(course.image)
             }
-            return res.json(data)
+            const updateCourseResult = await CourseModel.updateOne(
+                { _id: id },
+                { $set: data }
+            )
+            if(updateCourseResult.modifiedCount == 0)
+                throw createHttpError.InternalServerError("Course was Not Updated")
+
+            return res.json({
+                status: 201,
+                success: true,
+                data: {
+                    message: "Course was updates successfully! 🔥✨🎉"
+                }
+            })
         } catch (error) {
             next(error)
         }
