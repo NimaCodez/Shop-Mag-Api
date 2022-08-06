@@ -16,7 +16,7 @@ async function SignAccessToken(user) {
     const { mobile } = user;
 
     const options = {
-        expiresIn: "1h"
+        expiresIn: "7h"
     };
 
     return JWT.sign({ mobile }, JWT_TOKEN_SECRET_KEY, options)
