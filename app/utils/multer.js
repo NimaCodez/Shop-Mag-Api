@@ -57,7 +57,7 @@ function VideoFilter(req, file, cb) {
     return cb(createHttpError.BadRequest("File Format is not correct! 🗿🗿 "))
 }
 
-const maxSize = 2 * 1000 * 1000
+const maxSize = 10 * 1000 * 1000
 const UploadFile = multer({
     storage,
     fileFilter: FileFilter,
