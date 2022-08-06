@@ -1,5 +1,5 @@
 const { CourseModel } = require("../../../models/course.model");
-const { CopyObject } = require("../../../utils/functions");
+const { CopyObject, DeleteInvalidPropertyInObject, DeleteFileInPublic } = require("../../../utils/functions");
 const Controller = require("../controller");
 const path = require("path");
 const { CreateCourseSchema } = require("../../validators/admin/course.schema");
@@ -83,6 +83,24 @@ class CourseController extends Controller {
                     course
                 }
             })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async UpdateCourseById(req, res, next) {
+        try {
+            const { id } = req.params;
+            const course = await this.FindCourseById(id);
+            const data = CopyObject(req.body);
+            const { fileUploadPath, fileName } = req.body;
+            let blackList = ["time", "episodes", "chapters", "students", "likes", "bookmarks", "dislikes", "comments", "fileUploadPath", "fileName"]
+            DeleteInvalidPropertyInObject(data, blackList);
+            if (req.file) {
+                data.image = path.join(req.get("host"),fileUploadPath, fileName).replace(/\\/gi, "/");
+                DeleteFileInPublic(course.image)
+            }
+            return res.json(data)
         } catch (error) {
             next(error)
         }

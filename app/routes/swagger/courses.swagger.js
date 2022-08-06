@@ -114,7 +114,45 @@
  *                      example: free, cashed, espesial
  *                  Types:
  *                      $ref: '#/components/schemas/Type'
- *                      
+ *          EditCourse:
+ *              type: object
+ *              properties:
+ *                  title:
+ *                      type: string
+ *                      description: Course's title
+ *                      example: عنوان دوره
+ *                  short_text:
+ *                      type: string
+ *                      description: Course's short description
+ *                      example: متن توضیحات کامل تستی
+ *                  text:
+ *                      type: string
+ *                      description: Courses's Ful text
+ *                      example: متن توضیحات کامللل تستی
+ *                  tags:
+ *                      type: array
+ *                      description: Course's related tags
+ *                  category:
+ *                      type: string
+ *                      description: Course's Category
+ *                      example: 6279e994c1e47a98d0f356d3
+ *                  price:
+ *                      type: string
+ *                      description: Course's price
+ *                      example: 2500000
+ *                  discount:
+ *                      type: string
+ *                      description: Course's discount
+ *                      example: 20
+ *                  image:
+ *                      type: string
+ *                      format: binary
+ *                  type:
+ *                      type: string
+ *                      description: Course's type
+ *                      example: free, cashed, espesial
+ *                  Types:
+ *                      $ref: '#/components/schemas/Type'
  */
 
 /**
@@ -177,3 +215,27 @@
  *                  description: INTERNAL SERVER ERROR
  */
 
+/**
+ * @swagger
+ *  /admin/courses/update/{id}:
+ *      patch:
+ *          tags: [Course(Admin-Panel)]
+ *          summary: Course Edit
+ *          parameters:
+ *              -   in : path
+ *                  name: id
+ *                  type: string
+ *                  required: true
+ *          requestBody:
+ *              content:
+ *                  multipart/form-data:
+ *                      schema:
+ *                          $ref: '#/components/schemas/EditCourse' 
+ *          responses:
+ *              201:
+ *                  descripttion: UPDATED
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              $ref: '#/definitions/publicDefinition'
+ */
