@@ -44,9 +44,6 @@
  *                                  status:
  *                                      type: string
  *                                      example: "notStarted | Completed | Holding"
- *                                  time:
- *                                      type: string
- *                                      example: "01:22:34"
  *                                  price:
  *                                      type: integer
  *                                      example: 250,000

@@ -1,4 +1,5 @@
 const { Schema, Types, model } = require("mongoose");
+const { GetVideosTotalTime } = require("../utils/functions");
 const { CommentSchema } = require("./public.schema");
 
 const Episodes = new Schema({
@@ -38,7 +39,6 @@ const CourseSchema = new Schema({
     discount : { type: Number, default : 0 },
     type : { type: String, default: "free", required : true }, // free - cash - special
     status: { type: String, default: "Not Started" }, // Not started , Completed, Holdin
-    time : { type: String, default: "00:00:00" },
     teacher : { type: Types.ObjectId, ref:"user", required : true },
     chapters: { type: [ChapterSchema], default: [] },
     students: { type: [ Types.ObjectId ], default: [], ref: "user" }
@@ -52,6 +52,10 @@ CourseSchema.index({ title: "text", short_text: "text", text: "text" })
 
 CourseSchema.virtual("imgURL").get(function() {
     return `${process.env.BASE_URL}:${process.env.APP_PORT}/${this.image}`
+})
+
+CourseSchema.virtual("TotalTime").get(function() {
+    return GetVideosTotalTime(this.chapters)
 })
 
 module.exports = {

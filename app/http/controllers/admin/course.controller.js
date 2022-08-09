@@ -1,5 +1,5 @@
 const { CourseModel } = require("../../../models/course.model");
-const { CopyObject, DeleteInvalidPropertyInObject, DeleteFileInPublic } = require("../../../utils/functions");
+const { CopyObject, DeleteInvalidPropertyInObject, DeleteFileInPublic, GetVideosTotalTime } = require("../../../utils/functions");
 const Controller = require("../controller");
 const path = require("path");
 const { CreateCourseSchema } = require("../../validators/admin/course.schema");
@@ -54,7 +54,6 @@ class CourseController extends Controller {
                 price,
                 discount,
                 image,
-                time: "00:00:00",
                 status: "Not Started",
                 teacher
             })
@@ -75,6 +74,7 @@ class CourseController extends Controller {
         try {
             const { id } = req.params;
             const course = await CourseModel.findOne({ _id: id });
+            course.time =  GetVideosTotalTime(course.chapters)
             if (!course) throw createHttpError.NotFound("No course was found with that Is")
             return res.status(200).json({
                 status: 200,
