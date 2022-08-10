@@ -1,2 +1,2 @@
 const Application = require("./app/server");
-new Application(process.env.APP_PORT, process.env.DB_URL)
+new Application(process.env.APP_PORT, "mongodb://localhost:27017/storeDb")
