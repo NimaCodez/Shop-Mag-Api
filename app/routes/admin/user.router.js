@@ -1,5 +1,8 @@
 const router = require("express").Router();
-router.get("/user", )
+const { UserController } = require("../../http/controllers/user/user.controller");
+
+router.get("/all", UserController.GetAllUsers)
+router.patch("/update-profile", UserController.UpdateUserProfile)
 
 module.exports = {
     AdminUsersRoutes: router,

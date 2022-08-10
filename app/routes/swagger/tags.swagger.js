@@ -3,6 +3,8 @@
  *  tags:
  *      -   name: AuthRoutes
  *          description: User Auth Routes
+ *      -   name: Users(Admin-Panel)
+ *          description: Users Controll Section
  *      -   name: Course(Admin-Panel)
  *          description: Admin routes of courses for management.
  *      -   name: Chapter(Admin-Panel)

@@ -7,6 +7,7 @@ const Router = require("./routes/router");
 const createError = require("http-errors");
 const swaggerUI = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
+
 module.exports = class Application {
     #app = express();
     #PORT;

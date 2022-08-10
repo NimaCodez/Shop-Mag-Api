@@ -23,6 +23,8 @@ const UserSchema = new Schema({
     }
 })
 
+UserSchema.index({ mobile: "text", username: "text", first_name: "text", last_name: "text" })
+
 module.exports = {
     UserModel: model("user", UserSchema)
 }
