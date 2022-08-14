@@ -4,6 +4,7 @@ const { AdminChapterRouter } = require('./chapter.router');
 const { AdminCourseRouter } = require('./course.router');
 const { AdminEpisodesRouter } = require('./episode.router');
 const { AdminProductsRouter } = require('./product.router');
+const { AdminRolesRouter } = require('./roles.router');
 const { AdminUsersRoutes } = require('./user.router');
 const adminRouter = require('express').Router();
 
@@ -14,6 +15,7 @@ adminRouter.use('/courses', AdminCourseRouter)
 adminRouter.use('/chapter', AdminChapterRouter)
 adminRouter.use('/episode', AdminEpisodesRouter)
 adminRouter.use('/users', AdminUsersRoutes)
+adminRouter.use('/role', AdminRolesRouter)
 
 module.exports = {
     adminRouter

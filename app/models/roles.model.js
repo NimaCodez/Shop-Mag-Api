@@ -1,4 +1,4 @@
-const { default: mongoose, Schema, model, model } = require("mongoose");
+const { default: mongoose, Schema, model } = require("mongoose");
 
 const RoleSchema = new Schema({
     title: { type: String, required: true, unique: true },

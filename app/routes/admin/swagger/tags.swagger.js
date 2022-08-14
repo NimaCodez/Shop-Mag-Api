@@ -3,6 +3,7 @@
  *  tags:
  *      -   name: AuthRoutes
  *          description: User Auth Routes
+ *      -   name: RBAC(Admin-Panel)
  *      -   name: Users(Admin-Panel)
  *          description: Users Controll Section
  *      -   name: Course(Admin-Panel)

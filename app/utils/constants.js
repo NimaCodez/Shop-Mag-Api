@@ -6,8 +6,9 @@ const MongoIDPattern = /^[a-fA-F0-9]{24}$/i
 const ROLES = {
     USER: "USER",
     ADMIN: "ADMIN",
-    WRITER: "WRITER",
+    AUTHOR: "AUTHOR",
     TEACHER: "TEACHER",
+    STUDENT: "STUDENT",
     SUPPLIER: "SUPPLIER",
 }
 
