@@ -1,8 +1,5 @@
 const createHttpError = require("http-errors");
 const { RoleModel } = require("../../../models/roles.model");
-const rolesModel = require("../../../models/roles.model");
-const { DeleteInvalidPropertyInObject } = require("../../../utils/functions");
-const { AddRoleValidationSchema } = require("../../validators/RBAC/roles.schema");
 const Controller = require("../controller");
 
 class RoleController extends Controller {
@@ -47,7 +44,7 @@ class RoleController extends Controller {
             const BodyData = req.body;
             const UpdateRoleResult = await RoleModel.updateOne({ _id }, {
                 $set: BodyData
-            })            
+            })
             if (UpdateRoleResult.modifiedCount == 0) throw createHttpError.InternalServerError("Role was not updated")
             return res.status(200).json({
                 status: 200,
@@ -63,9 +60,14 @@ class RoleController extends Controller {
 
     async RemoveRole(req, res, next) {
         try {
-            const { id } = req.params;
-            const deleteResult = await RoleModel.deleteOne({ _id: id })
-            if(deleteResult.deletedCount == 0) throw createHttpError.InternalServerError("Role Was Not Deleted")
+            const { field } = req.params;
+            const deleteResult = await RoleModel.deleteOne({
+                $or: [
+                    { _id: field },
+                    { title: field }
+                ]
+            })
+            if (deleteResult.deletedCount == 0) throw createHttpError.InternalServerError("Role Was Not Deleted")
             return res.status(200).json({
                 status: 200,
                 success: true,
