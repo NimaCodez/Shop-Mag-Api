@@ -62,7 +62,7 @@ module.exports = class Application {
             { explorer: true }
         ))
     }
-    
+
     CreateServer() {
         const http = require('http');
         http.createServer(this.#app).listen(this.#PORT, () => {

@@ -1,5 +1,6 @@
 const createHttpError = require("http-errors");
 const { PermissionModel } = require("../../../models/permissions");
+const { DeleteInvalidPropertyInObject } = require("../../../utils/functions");
 const Controller = require("../controller");
 
 class PermissionsController extends Controller {
@@ -37,7 +38,20 @@ class PermissionsController extends Controller {
 
     async UpdatePermissions(req, res, next) {
         try {
-            
+            const { id } = req.params;
+            const data = req.body;
+            DeleteInvalidPropertyInObject(data, !["title", "permission"])
+            const updateResult = await PermissionModel.updateOne({ _id: id }, {
+                $set: data
+            })
+            if (updateResult.modifiedCount == 0) throw createHttpError.InternalServerError("Permission was not updated")
+            return res.status(200).json({
+                status: 200,
+                success: true,
+                data: {
+                    message: "Permission Was Updated Successfully 🎉✨🔥"
+                }
+            })
         } catch (error) {
             next(error)
         }
@@ -45,7 +59,21 @@ class PermissionsController extends Controller {
 
     async RemovePermissions(req, res, next) {
         try {
-            
+            const { field } = req.params;
+            const removeResult = await PermissionModel.deleteOne({
+                $or: [
+                    { _id : field },
+                    { "title": field }
+                ]
+            })
+            if (removeResult.deletedCount == 0) throw createHttpError.InternalServerError("Permission was not removed")
+            return res.status(200).json({
+                status: 200,
+                success: true,
+                data: {
+                    message: "Permission was not removed successfully!"
+                }
+            })
         } catch (error) {
             next(error)
         }
