@@ -7,9 +7,9 @@ const { AddRoleValidationSchema, UpdateRoleValidationSchema } = require("../../h
 const router = require("express").Router();
 
 router.get("/list", RoleController.GetAllRoles)
-router.post("/add", StringToArray("permissions"), AddRoleValidationSchema(), validationErrorMapper, RoleController.AddRole)
-router.patch("/update/:id", StringToArray("permissions"), UpdateRoleValidationSchema(), validationErrorMapper, RoleController.UpdatRole)
-router.delete("/remove/:id", MongoDbObjectIdValidator(), validationErrorMapper, RoleController.RemoveRole)
+router.post("/add", StringToArray("permission"), AddRoleValidationSchema(), validationErrorMapper, RoleController.AddRole)
+router.patch("/update/:id", StringToArray("permission"), UpdateRoleValidationSchema(), validationErrorMapper, RoleController.UpdatRole)
+router.delete("/remove/:field", MongoDbObjectIdValidator(), validationErrorMapper, RoleController.RemoveRole)
 
 module.exports = {
     AdminRolesRouter: router

@@ -1,4 +1,4 @@
-const { default: mongoose, Schema, model, model } = require("mongoose");
+const { default: mongoose, Schema, model } = require("mongoose");
 
 const PermissionSchema = new Schema({
     title: { type: String, required: true, unique: true },
@@ -8,6 +8,8 @@ const PermissionSchema = new Schema({
         virtuals: true
     }
 })
+
+PermissionSchema.index({ title: "text" })
 
 module.exports = {
     PermissionModel : model("permissions", PermissionSchema)

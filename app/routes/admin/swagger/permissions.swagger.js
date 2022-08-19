@@ -85,7 +85,7 @@
  *              content:
  *                  application/x-www-form-urlencoded:
  *                      schema:
- *                          $ref: '#/components/schemas/Role'
+ *                          $ref: '#/components/schemas/Permission'
  *          
  *          responses:
  *              201:
