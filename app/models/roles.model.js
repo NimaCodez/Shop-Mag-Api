@@ -10,6 +10,12 @@ const RoleSchema = new Schema({
     }
 })
 
+// RoleSchema.virtual("permission", {
+//     ref : "permissions",
+//     localField : permissio,
+//     foreignField: "author"
+// })
+
 module.exports = {
     RoleModel : model("roles", RoleSchema)
 }

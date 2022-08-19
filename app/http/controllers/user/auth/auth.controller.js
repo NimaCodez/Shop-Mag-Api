@@ -79,7 +79,7 @@ class UserAuthController extends Controller {
         return !!(await UserModel.create({
             mobile,
             otp,
-            Role: [ROLES.USER]
+            Role: ROLES.USER
         }))
     }
     async UpdateUser(mobile, updateBody = {}) {

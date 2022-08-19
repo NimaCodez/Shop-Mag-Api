@@ -56,20 +56,7 @@ const verifyRefreshToken = (token) => {
 
 }
 
-function CheckRole(role) {
-    return async function (req, res, next) {
-        try {
-            const user = await req.user;
-            if (user.Role.includes(role)) return await next();
-            throw createError.Forbidden("You haven't the right role to access this page 😂👋🏻")
-        } catch (error) {
-            next(error)
-        }
-    }
-}
-
 module.exports = {
     verifyAccessToken,
     verifyRefreshToken,
-    CheckRole,
 }

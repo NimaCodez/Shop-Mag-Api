@@ -14,7 +14,7 @@ const UserSchema = new Schema({
     bills : { type : [], default : [] },
     discount : { type : Number, default : 0 },
     birthday : { type : String },
-    Role : { type : [String], default : "USER" },
+    Role : { type : String, default : "USER", ref: "permissions" },
     Courses: { type: [ Types.ObjectId ], ref: "course", default: [] }
 }, {
     timestamps: true,
