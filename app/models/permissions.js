@@ -9,6 +9,8 @@ const PermissionSchema = new Schema({
     }
 })
 
+PermissionSchema.index({ title: "text" })
+
 module.exports = {
     PermissionModel : model("permissions", PermissionSchema)
 }

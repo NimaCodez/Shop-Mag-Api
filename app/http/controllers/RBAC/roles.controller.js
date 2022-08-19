@@ -21,9 +21,9 @@ class RoleController extends Controller {
 
     async AddRole(req, res, next) {
         try {
-            const { title, permissions } = req.body;
+            const { title, permissions, description } = req.body; 
             const AddRoleResult = await RoleModel.create({
-                title, permissions: permissions ? permissions : null
+                title, permissions: permissions ? permissions : null, description
             })
             if (!AddRoleResult) throw createHttpError.InternalServerError("Role was not added!")
             return res.status(200).json({
