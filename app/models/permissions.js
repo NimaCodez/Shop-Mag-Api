@@ -1,4 +1,4 @@
-const { default: mongoose, Schema, model } = require("mongoose");
+const { Schema, model } = require("mongoose");
 
 const PermissionSchema = new Schema({
     title: { type: String, required: true, unique: true },
@@ -10,6 +10,10 @@ const PermissionSchema = new Schema({
 })
 
 PermissionSchema.index({ title: "text" })
+
+PermissionSchema.virtual("permission").get(function() {
+    return this.title;
+})
 
 module.exports = {
     PermissionModel : model("permissions", PermissionSchema)

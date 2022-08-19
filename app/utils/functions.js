@@ -133,6 +133,12 @@ function GetVideosTotalTime(chapters = []) {
     return `${hour}:${minute}:${second}`;
 }
 
+function GetUserPermissionsTitle(user) {
+    // map through pemissions
+    // aggregate
+    //done
+}
+
 module.exports = {
     GenerateRandomNumber,
     SignAccessToken,

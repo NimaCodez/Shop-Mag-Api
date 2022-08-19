@@ -13,7 +13,7 @@ const Router = require('express').Router();
 // })()
 
 Router.use('/user', AuthRouter)
-Router.use("/admin", verifyAccessToken, CheckRole("ADMIN"), adminRouter)
+Router.use("/admin", verifyAccessToken, adminRouter)
 Router.use('/dev', DevRoutes)
 Router.get('/', IndexRouter);
 module.exports = Router;

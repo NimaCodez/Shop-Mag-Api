@@ -1,3 +1,4 @@
+const { PermissionGuard } = require('../../http/middlewares/Permission.guard');
 const { AdminBlogsRouter } = require('./blog.router');
 const { AdminCategoryRouter } = require('./category.router');
 const { AdminChapterRouter } = require('./chapter.router');
@@ -16,7 +17,7 @@ adminRouter.use('/permission', AdminPermissionsRouter)
 adminRouter.use('/courses', AdminCourseRouter)
 adminRouter.use('/chapter', AdminChapterRouter)
 adminRouter.use('/episode', AdminEpisodesRouter)
-adminRouter.use('/users', AdminUsersRoutes)
+adminRouter.use('/users', PermissionGuard(["user"]), AdminUsersRoutes)
 adminRouter.use('/role', AdminRolesRouter)
 
 module.exports = {

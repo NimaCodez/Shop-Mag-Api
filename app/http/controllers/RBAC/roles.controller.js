@@ -5,7 +5,19 @@ const Controller = require("../controller");
 class RoleController extends Controller {
     async GetAllRoles(req, res, next) {
         try {
-            const roles = await RoleModel.find({});
+            const user = req.user;
+            const roles = await RoleModel.aggregate([
+                {
+                    $match: {},
+                },
+                {
+                    $lookup: {
+                        as: "permissionInfo",
+                        from: "permissions",
+                        localField: "permissions",
+                        foreignField: "_id",
+                    }
+                }])
             if (!roles) throw createHttpError.NotFound("No Roles were found!")
             return res.status(200).json({
                 status: 200,
@@ -21,7 +33,7 @@ class RoleController extends Controller {
 
     async AddRole(req, res, next) {
         try {
-            const { title, permissions, description } = req.body; 
+            const { title, permissions, description } = req.body;
             const AddRoleResult = await RoleModel.create({
                 title, permissions: permissions ? permissions : null, description
             })
