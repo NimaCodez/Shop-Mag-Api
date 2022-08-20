@@ -4,6 +4,7 @@ const { RoleModel } = require("../../models/roles.model");
 function CheckPermission(requiredPermissions = []) {
     return async function (req, res, next) {
         try {
+            const AllPerissions = requiredPermissions.flat(2)
             const user = await req.user;
             const role = await RoleModel.aggregate([
                 {
