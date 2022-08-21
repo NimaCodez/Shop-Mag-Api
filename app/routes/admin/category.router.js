@@ -1,22 +1,23 @@
 const { CategoryController } = require("../../http/controllers/admin/category.controller");
-const { verifyAccessToken, CheckRole } = require("../../http/middlewares/verifyAccessToken");
+const { PermissionGuard } = require("../../http/middlewares/Permission.guard");
+const { PERMISSIONS } = require("../../utils/constants");
 const CategoryRouter = require("express").Router();
 
-CategoryRouter.post("/add", CategoryController.AddCategory)
+CategoryRouter.post("/add", PermissionGuard([PERMISSIONS.CONTENT_MANAGER]), CategoryController.AddCategory)
 
-CategoryRouter.patch("/edit/:id", CategoryController.EditCategory)
+CategoryRouter.patch("/edit/:id", PermissionGuard([PERMISSIONS.CONTENT_MANAGER]), CategoryController.EditCategory)
 
-CategoryRouter.delete("/remove/:id", CategoryController.RemoveCategory)
+CategoryRouter.delete("/remove/:id", PermissionGuard([PERMISSIONS.CONTENT_MANAGER]), CategoryController.RemoveCategory)
 
-CategoryRouter.get("/all", CategoryController.GetAllCategories)
+CategoryRouter.get("/all", PermissionGuard([]), CategoryController.GetAllCategories)
 
-CategoryRouter.get("/list-of-all", CategoryController.GetAllCategoriesWithoutPopulate)
+CategoryRouter.get("/list-of-all", PermissionGuard([]), CategoryController.GetAllCategoriesWithoutPopulate)
 
-CategoryRouter.get("/parents", CategoryController.GetAllParents)
+CategoryRouter.get("/parents", PermissionGuard([PERMISSIONS.CONTENT_MANAGER]), CategoryController.GetAllParents)
 
-CategoryRouter.get("/children/:id", CategoryController.GetChildrenOfParents)
+CategoryRouter.get("/children/:id", PermissionGuard([PERMISSIONS.CONTENT_MANAGER]), CategoryController.GetChildrenOfParents)
 
-CategoryRouter.get("/:id", CategoryController.GetCategoryById)
+CategoryRouter.get("/:id", PermissionGuard([]), CategoryController.GetCategoryById)
 
 module.exports = {
     AdminCategoryRouter : CategoryRouter

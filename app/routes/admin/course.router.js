@@ -1,16 +1,18 @@
-const { CourseController } = require("../../http/controllers/admin/course.controller")
+const { CourseController } = require("../../http/controllers/admin/course.controller");
+const { PermissionGuard } = require("../../http/middlewares/Permission.guard");
 const { StringToArray } = require("../../http/middlewares/StringToArray");
+const { PERMISSIONS } = require("../../utils/constants");
 const { UploadFile } = require("../../utils/multer");
 
 const courseRouter = require("express").Router();
 
-courseRouter.get("/list", CourseController.GetAllCourses) // Get All the courses
+courseRouter.get("/list", PermissionGuard([]), CourseController.GetAllCourses) // Get All the courses
 
-courseRouter.post("/add", UploadFile.single("image"), StringToArray("tags"), CourseController.AddCourse)
+courseRouter.post("/add", PermissionGuard([PERMISSIONS.TEACHER]), UploadFile.single("image"), StringToArray("tags"), CourseController.AddCourse)
 
-courseRouter.get("/:id", CourseController.GetCourseById) // get one course
+courseRouter.get("/:id", PermissionGuard([]), CourseController.GetCourseById) // get one course
 
-courseRouter.patch("/update/:id", UploadFile.single("image"), CourseController.UpdateCourseById) // Edit a courses
+courseRouter.patch("/update/:id", PermissionGuard([PERMISSIONS.TEACHER]), UploadFile.single("image"), CourseController.UpdateCourseById) // Edit a courses
 
 module.exports = {
     AdminCourseRouter: courseRouter,

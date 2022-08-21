@@ -16,10 +16,12 @@ const ROLES = Object.freeze({
 const PERMISSIONS = Object.freeze({
     USER: ["profile"],
     ADMIN: ["all"],
-    AUTHOR: ["course", "blog", "category"],
+    SUPERADMIN: ["all"],
+    CONTENT_MANAGER: ["course", "blog", "category", "product"],
     TEACHER: ["course", "blog"],
     SUPPLIER: ["product"],
-}) 
+    ALL: "all"
+})
 
 // const PERMISSIONS = {
 //     ALL: "all",

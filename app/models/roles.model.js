@@ -6,15 +6,9 @@ const RoleSchema = new Schema({
     permissions: { type: [mongoose.Types.ObjectId], ref: "permissions", default: [] }
 }, {
     toJSON: {
-        virtuals: true
+        virtuals: true,
     }
 })
-
-// RoleSchema.virtual("permission", {
-//     ref : "permissions",
-//     localField : permissio,
-//     foreignField: "author"
-// })
 
 module.exports = {
     RoleModel : model("roles", RoleSchema)

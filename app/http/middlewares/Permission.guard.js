@@ -1,5 +1,6 @@
 const createHttpError = require("http-errors");
 const { RoleModel } = require("../../models/roles.model");
+const { PERMISSIONS } = require("../../utils/constants");
 
 function CheckPermission(requiredPermissions = []) {
     return async function (req, res, next) {
@@ -10,7 +11,7 @@ function CheckPermission(requiredPermissions = []) {
                 {
                     $match: {
                         title: user.Role
-                    },
+                    }
                 },
                 {
                     $lookup: {
@@ -22,10 +23,11 @@ function CheckPermission(requiredPermissions = []) {
                 }
             ])
             const UserPermissions = role[0].result.map(item => item.title);
+            if(UserPermissions.includes("all")) return next()
             const HasPermission = requiredPermissions.every(permission => {
                 return UserPermissions.includes(permission)
             })
-            if (requiredPermissions.length == 0 || HasPermission) return next();
+            if (AllPerissions.length == 0 || HasPermission) return next();
             throw createHttpError.Forbidden("you Don't have the right access to see this page! ")
         } catch (error) {
             next(error)
