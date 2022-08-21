@@ -2,7 +2,7 @@ const JWT = require('jsonwebtoken');
 const { JWT_TOKEN_SECRET_KEY, REFRESH_TOKEN_SECRET_KEY } = require('../../utils/constants');
 const createError = require("http-errors");
 const { UserModel } = require('../../models/user.model');
-// const redisClient = require('../../utils/init_redis');
+const redisClient = require('../../utils/init_redis');
 
 async function GetToken (headers) {
     const token = await headers?.authorization?.split(" ")[1] || [];
@@ -46,7 +46,7 @@ const verifyRefreshToken = (token) => {
 
             if (!user) reject(createError.Unauthorized("No Account Was found! 🐢"));
 
-            // const refreshToken = await redisClient.get(String(user._id));
+            const refreshToken = await redisClient.get(String(user._id));
             if (token === refreshToken) resolve(mobile)
 
             reject(createError.Unauthorized("Force Login to account was not done"));

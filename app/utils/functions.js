@@ -5,7 +5,6 @@ const { UserModel } = require("../models/user.model");
 const { JWT_TOKEN_SECRET_KEY, REFRESH_TOKEN_SECRET_KEY } = require("./constants");
 const createError = require("http-errors");
 const redisClient = require("./init_redis");
-const { allowedNodeEnvironmentFlags } = require("process");
 
 function GenerateRandomNumber() {
     return Math.floor(Math.random() * 90000) + 10000;
@@ -35,9 +34,9 @@ async function SignRefreshToken(userId) {
 
         JWT.sign({ mobile }, REFRESH_TOKEN_SECRET_KEY, options, async (err, token) => {
             if (err) reject(createError.InternalServerError("Internal Server Error"))
-            // await redisClient.set(String(userId), token, {EX: 31536000}, (err) => {
-            //     if (err) reject(console.log(err));
-            // })
+            await redisClient.set(String(userId), token, {EX: 31536000}, (err) => {
+                if (err) reject(console.log(err));
+            })
             resolve(token);
         })
     })
@@ -131,12 +130,6 @@ function GetVideosTotalTime(chapters = []) {
     if (String(minute).length == 1) minute = `0${minute}`;
     if (String(hour).length == 1) second = `0${second}`;
     return `${hour}:${minute}:${second}`;
-}
-
-function GetUserPermissionsTitle(user) {
-    // map through pemissions
-    // aggregate
-    //done
 }
 
 module.exports = {
