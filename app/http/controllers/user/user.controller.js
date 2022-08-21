@@ -54,8 +54,6 @@ class UserController extends Controller {
     async UserProfile(req, res, next){
         try {
             const user = req.user;
-            //bill, courses, discount, 
-            // console.log(await getBasketOfUser(user._id));
             return res.status(200).json({
                 status: 200,
                 success: true,
