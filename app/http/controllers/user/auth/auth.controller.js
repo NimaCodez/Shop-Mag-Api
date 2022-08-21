@@ -9,10 +9,9 @@ const Controller = require('../../controller');
 class UserAuthController extends Controller {
     async GetOtp(req, res, next) {
         try {
-            // await GetOtpSchema.validateAsync(req.body);
+            await GetOtpSchema.validateAsync(req.body);
             const { mobile } = req.body;
             const code = GenerateRandomNumber()
-            // sms
             const result = await this.saveUser(mobile, code);
             if(!result) throw createError.Unauthorized("You were not logged In 🐢")
             return res.status(200).json({
@@ -27,7 +26,7 @@ class UserAuthController extends Controller {
     }
     async CheckOtp(req, res, next) {
         try {
-            // await CheckOtpSchema.validateAsync(req.body);
+            await CheckOtpSchema.validateAsync(req.body);
             const { mobile, code } = req.body;
             const user = await UserModel.findOne({mobile});
             if(!user) throw createError.NotFound("Your Account was not Found 🔍");

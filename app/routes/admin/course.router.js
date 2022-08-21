@@ -6,13 +6,13 @@ const { UploadFile } = require("../../utils/multer");
 
 const courseRouter = require("express").Router();
 
-courseRouter.get("/list", PermissionGuard([]), CourseController.GetAllCourses) // Get All the courses
+courseRouter.get("/list", PermissionGuard([]), CourseController.GetAllCourses)
 
 courseRouter.post("/add", PermissionGuard([PERMISSIONS.TEACHER]), UploadFile.single("image"), StringToArray("tags"), CourseController.AddCourse)
 
-courseRouter.get("/:id", PermissionGuard([]), CourseController.GetCourseById) // get one course
+courseRouter.get("/:id", PermissionGuard([]), CourseController.GetCourseById)
 
-courseRouter.patch("/update/:id", PermissionGuard([PERMISSIONS.TEACHER]), UploadFile.single("image"), CourseController.UpdateCourseById) // Edit a courses
+courseRouter.patch("/update/:id", PermissionGuard([PERMISSIONS.TEACHER]), UploadFile.single("image"), CourseController.UpdateCourseById)
 
 module.exports = {
     AdminCourseRouter: courseRouter,

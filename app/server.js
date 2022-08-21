@@ -37,7 +37,7 @@ module.exports = class Application {
                     description: "A Shop Api with Blog Section",
                     contact: {
                         name: "Nima",
-                        url: "https://freerealapi.com",
+                        url: "https://devnima.github.io",
                         email: "nimacodes@gmail.com",
                     },
                 },
