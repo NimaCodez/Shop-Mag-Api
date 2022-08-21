@@ -61,7 +61,6 @@ class PermissionsController extends Controller {
         try {
             const { field } = req.params;
             const DeleteParameter = await this.FindPermissionByIdOrTitle(field);
-            console.log(DeleteParameter)
             const removeResult = await PermissionModel.deleteOne(DeleteParameter)
             if (!removeResult.deletedCount) throw createHttpError.InternalServerError("Permission was not removed")
             return res.status(200).json({

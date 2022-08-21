@@ -200,7 +200,6 @@ class CategoryController extends Controller {
             await MongoIdValidator.validateAsync(req.params);
             const { id } = req.params;
             const children = await CategoryModel.find({ parent: id }, { __v: 0 });
-            console.log(children);
             if (!children) throw { status: 404, success: false, message: "No children Category found for this parent" }
             return res.status(200).json({
                 status: 200,

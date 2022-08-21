@@ -12,7 +12,6 @@ class EpisodeController extends Controller {
         try {
             const { title, text, type, chapterID, courseID, fileName, fileUploadPath } = await CreateEpisodeSchema.validateAsync(req.body);
             const videoAddress = path.join(fileUploadPath, fileName).replace(/\\/g, "/")
-            console.log(videoAddress);
             const videoUrl = `${process.env.BASE_URL}:${process.env.APP_PORT}/${videoAddress}`
             const seconds = await getVideoDurationInSeconds(videoUrl)
             const time = getTime(seconds)
@@ -61,9 +60,7 @@ class EpisodeController extends Controller {
     async EditEpisode(req, res, next) {
         try {
             const { id: episodeID } = await MongoIdValidator.validateAsync({ id: req.params.episodeID });
-            console.log("EpisodeID conrtoller: ", episodeID);
             const episode = await this.GetOneEpisode(episodeID)
-            console.log("Episode Controller 68: ", episode);
             const { fileName, fileUploadPath } = req.body;
             let blackListFields = ["_id"]
             if (fileName && fileUploadPath) {
@@ -78,15 +75,12 @@ class EpisodeController extends Controller {
                 blackListFields.push("time")
                 blackListFields.push("videoAddress")
             }
-            console.log("BlackLists: ", blackListFields);
             const data = req.body;
             DeleteInvalidPropertyInObject(data, blackListFields)
-            console.log("data: ", data);
             const newEpisode = {
                 ...episode,
                 ...data
             }
-            console.log("newEpisode: ", newEpisode)
             const EditResult = await CourseModel.updateOne({ "chapters.episodes._id": episodeID }, {
                 $set: {
                     "chapters.$.episodes": newEpisode
@@ -107,10 +101,8 @@ class EpisodeController extends Controller {
     
     async GetOneEpisode(episodeID) {
         const course = await CourseModel.findOne({ "chapters.episodes._id": episodeID })
-        console.log("Course: ", course)
         if (!course) throw createHttpError.NotFound("No epsiode was found!")
         const episode = await course?.chapters?.[0].episodes?.[0]
-        console.log("Episode ", episode)
         if (!episode) throw createHttpError.NotFound("No episode was found 2")
         return CopyObject(episode)
     }
