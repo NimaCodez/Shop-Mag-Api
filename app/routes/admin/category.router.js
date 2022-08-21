@@ -1,5 +1,6 @@
 const { CategoryController } = require("../../http/controllers/admin/category.controller");
-const { verifyAccessToken, CheckRole } = require("../../http/middlewares/verifyAccessToken");
+const { PermissionGuard } = require("../../http/middlewares/Permission.guard");
+const { PERMISSIONS } = require("../../utils/constants");
 const CategoryRouter = require("express").Router();
 
 CategoryRouter.post("/add", PermissionGuard([PERMISSIONS.CONTENT_MANAGER]), CategoryController.AddCategory)

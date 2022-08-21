@@ -11,7 +11,7 @@ function CheckPermission(requiredPermissions = []) {
                 {
                     $match: {
                         title: user.Role
-                    },
+                    }
                 },
                 {
                     $lookup: {
@@ -23,10 +23,10 @@ function CheckPermission(requiredPermissions = []) {
                 }
             ])
             const UserPermissions = role[0].result.map(item => item.title);
+            if(UserPermissions.includes("all")) return next()
             const HasPermission = requiredPermissions.every(permission => {
                 return UserPermissions.includes(permission)
             })
-            if(AllPerissions.includes(PERMISSIONS.ADMIN)) return next()
             if (AllPerissions.length == 0 || HasPermission) return next();
             throw createHttpError.Forbidden("you Don't have the right access to see this page! ")
         } catch (error) {

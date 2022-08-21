@@ -1,5 +1,7 @@
-const { CourseController } = require("../../http/controllers/admin/course.controller")
+const { CourseController } = require("../../http/controllers/admin/course.controller");
+const { PermissionGuard } = require("../../http/middlewares/Permission.guard");
 const { StringToArray } = require("../../http/middlewares/StringToArray");
+const { PERMISSIONS } = require("../../utils/constants");
 const { UploadFile } = require("../../utils/multer");
 
 const courseRouter = require("express").Router();

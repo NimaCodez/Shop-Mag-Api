@@ -11,10 +11,6 @@ const PermissionSchema = new Schema({
 
 PermissionSchema.index({ title: "text" })
 
-PermissionSchema.virtual("permission").get(function() {
-    return this.title;
-})
-
 module.exports = {
     PermissionModel : model("permissions", PermissionSchema)
 }

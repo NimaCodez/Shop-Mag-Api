@@ -12,14 +12,14 @@ class UserAuthController extends Controller {
             // await GetOtpSchema.validateAsync(req.body);
             const { mobile } = req.body;
             const code = GenerateRandomNumber()
+            // sms
             const result = await this.saveUser(mobile, code);
             if(!result) throw createError.Unauthorized("You were not logged In 🐢")
             return res.status(200).json({
                 status: 200,
                 success: true,
-                code,
                 mobile,
-                message: `Logged in successfully: Code: ${code}`
+                message: `Logged in successfully`
             })
         } catch (error) {
             next(createError.BadRequest(error.message));

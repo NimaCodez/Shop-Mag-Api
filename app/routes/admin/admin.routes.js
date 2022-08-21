@@ -19,7 +19,7 @@ adminRouter.use('/episode', PermissionGuard([PERMISSIONS.TEACHER]), AdminEpisode
 adminRouter.use('/users', AdminUsersRoutes)
 adminRouter.use('/category', AdminCategoryRouter)
 adminRouter.use('/role', PermissionGuard([PERMISSIONS.ADMIN]), AdminRolesRouter)
-adminRouter.use('/permission', PermissionGuard([PERMISSIONS.ADMIN]), AdminPermissionsRouter)
+adminRouter.use('/permission', AdminPermissionsRouter)
 
 module.exports = {
     adminRouter
