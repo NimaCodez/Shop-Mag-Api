@@ -4,9 +4,8 @@ const { RoleModel } = require("../../models/roles.model");
 function CheckPermission(requiredPermissions = []) {
     return async function (req, res, next) {
         try {
+            const AllPerissions = requiredPermissions.flat(2)
             const user = await req.user;
-            console.log(user.Role)
-            RoleModel.findOne({})
             const role = await RoleModel.aggregate([
                 {
                     $match: {
@@ -22,9 +21,7 @@ function CheckPermission(requiredPermissions = []) {
                     }
                 }
             ])
-            console.log(role[0].result.map(item => item.title));
             const UserPermissions = role[0].result.map(item => item.title);
-            console.log(UserPermissions)
             const HasPermission = requiredPermissions.every(permission => {
                 return UserPermissions.includes(permission)
             })
