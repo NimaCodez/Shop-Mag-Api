@@ -31,7 +31,7 @@ BlogSchema.virtual("category_detail", {
     foreignField: "category"
 })
 
-BlogSchema.virtual("VideoURL").get(function(){
+BlogSchema.virtual("imageURL").get(function(){
     return `${process.env.BASE_URL}:${process.env.APP_PORT}/${this.image}`
 })
 
