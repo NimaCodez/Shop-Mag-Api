@@ -1,4 +1,5 @@
 const Joi = require("@hapi/joi");
+const createHttpError = require("http-errors");
 const createError = require("http-errors");
 const { MongoIDPattern } = require("../../../utils/constants");
 
@@ -17,7 +18,7 @@ const CreateProductSchema = Joi.object({
     width: Joi.number().allow(null, 0, "0").error(createError.BadRequest("Input width is wrong! ")),
     type: Joi.string().regex(/(virtual|physical)/i),
     fileName: Joi.string().regex(/(\.png|\.jpg|\.webp|\.jpeg|\.gif)$/).error(createError.BadRequest("File fromat is not supported")),
-    colors: Joi.array().min(1).error(createError.BadRequest("Selected colors can't be more than 20")),
+    colors: Joi.allow(),
     fileUploadPath : Joi.allow()
 });
 
