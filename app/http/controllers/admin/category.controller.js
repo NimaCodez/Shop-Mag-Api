@@ -1,11 +1,9 @@
 const { CategoryModel } = require("../../../models/categories.model");
 const createError = require("http-errors");
-
 const Controller = require("../controller");
 const { CreateCategoryValidation } = require("../../validators/admin/category.schema");
 const { MongoIdValidator } = require("../../validators/public");
 const { default: mongoose } = require("mongoose");
-const { id } = require("@hapi/joi/lib/base");
 
 class CategoryController extends Controller {
 

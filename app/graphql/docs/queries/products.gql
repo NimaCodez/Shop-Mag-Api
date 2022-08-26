@@ -1,0 +1,27 @@
+{
+    products {
+    title
+    short_text
+    ImagesURL
+    tags
+    category {
+      title
+    }
+    price
+    discount
+    count
+    format
+    type
+    features {
+      length
+      height
+      width
+      weight
+      madein
+    }
+    supplier {
+      first_name
+      last_name
+    }
+  }
+}
