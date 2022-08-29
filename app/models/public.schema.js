@@ -5,9 +5,12 @@ const CommentSchema = new Schema({
     comment: { type: String, required: true},
     createdAt: { type: Date, default: Date.now()},
     parent: { type: Types.ObjectId, ref: "comment" }
+}, {
+    timestamps: {
+        createdAt: true
+    }
 })
 
 module.exports = {
     CommentSchema,
-
 }
