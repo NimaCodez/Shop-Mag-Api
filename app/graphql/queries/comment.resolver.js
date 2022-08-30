@@ -13,9 +13,9 @@ const CreateCommentForBlog = {
         blogID: { type: GraphQLString },
         parent: { type: GraphQLString }
     },
-    resolve: (_, args, context) => {
+    resolve: async (_, args, context) => {
         const {req}=context;
-        const user = await VerifyAccessTokenInGraphQL(req)
+        const user = VerifyAccessTokenInGraphQL(req)
         const {comment, blogID, parent} = args; 
         await checkExistBlog(blogID)
         await BlogModel.updateOne({_id:blogID}, {
