@@ -5,7 +5,7 @@ const { UserModel } = require('../../models/user.model');
 const redisClient = require('../../utils/init_redis');
 const createHttpError = require('http-errors');
 
-async function GetToken (headers) {
+async function GetToken(headers) {
     const token = await headers?.authorization?.split(" ")[1] || [];
     if (token) return token;
     throw createError.Unauthorized("please Login first! 🐢 ")
@@ -59,18 +59,18 @@ const verifyRefreshToken = (token) => {
 
 async function VerifyAccessTokenInGraphQL(req) {
     try {
-      const token = GetToken(req.headers);
-      const { mobile } = JWT.verify(token, JWT_TOKEN_SECRET_KEY)
-      const user = await UserModel.findOne(
-        { mobile },
-        { password: 0, otp: 0 }
-      );
-      if (!user) throw new createHttpError.Unauthorized("No Account was found");
-      return user;
+        const token = await GetToken(req.body.variables);
+        const { mobile } = JWT.verify(token, JWT_TOKEN_SECRET_KEY)
+        const user = await UserModel.findOne(
+            { mobile },
+            { password: 0, otp: 0 }
+        );
+        if (!user) throw new createHttpError.Unauthorized("No Account was found");
+        return user;
     } catch (error) {
-      throw new createHttpError.Unauthorized();
+        throw new createHttpError.Unauthorized();
     }
-  }
+}
 
 module.exports = {
     verifyAccessToken,
