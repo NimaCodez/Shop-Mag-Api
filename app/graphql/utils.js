@@ -1,4 +1,8 @@
 const { Kind } = require("graphql");
+const createHttpError = require("http-errors");
+const { BlogModel } = require("../models/blog.model");
+const { CourseModel } = require("../models/course.model");
+const { ProductModel } = require("../models/product.model");
 
 function parseObject(valueNode) {
     const value = Object.create(null);
@@ -52,11 +56,13 @@ async function checkExistCourse(id){
     if(!course) throw createHttpError.NotFound("دوره ای با این مشخصات یافت نشد")
     return course
 }
+
 async function checkExistProduct(id){
     const product =  await ProductModel.findById(id);
     if(!product) throw createHttpError.NotFound("محصولی با این مشخصات یافت نشد")
     return product
 }
+
 async function checkExistBlog(id){
     const blog =  await BlogModel.findById(id);
     if(!blog) throw createHttpError.NotFound("بلاگی با این مشخصات یافت نشد")
