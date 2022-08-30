@@ -1,5 +1,10 @@
-const { GraphQLString } = require("graphql");
+const { GraphQLString, GraphQLObjectType } = require("graphql");
+const createHttpError = require("http-errors");
+const { VerifyAccessTokenInGraphQL } = require("../../http/middlewares/verifyAccessToken");
+const { BlogModel } = require("../../models/blog.model");
 const { CommentType } = require("../typeDefs/comment.type");
+const { AnyType } = require("../typeDefs/public.type");
+const { checkExistBlog } = require("../utils");
 
 const CreateCommentForBlog = {
     type: CommentType,
@@ -9,10 +14,30 @@ const CreateCommentForBlog = {
         parent: { type: GraphQLString }
     },
     resolve: (_, args, context) => {
-        const { comment, blogID, parent } = args;
-        console.log({comment, blogID, parent});
-        return { comment, blogID, parent }
+        const {req}=context;
+        const user = await VerifyAccessTokenInGraphQL(req)
+        const {comment, blogID, parent} = args; 
+        await checkExistBlog(blogID)
+        await BlogModel.updateOne({_id:blogID}, {
+            $push:{
+                comments:{
+                    comment,user:user._id,show:false,openToComment:!parent
+                }
+            }
+        })
+        return {
+            status:201,
+            data:{
+                message:"Comment was posted Successfully! and it will be shown after submition 🎉"
+            }
+        }
     }
+}
+
+async function CheckExistBlog(id) {
+    const blog = await BlogModel.findById(id);
+    if (!blog) throw createHttpError.NotFound("No Blog with this ID")
+    return blog;
 }
 
 module.exports = {
