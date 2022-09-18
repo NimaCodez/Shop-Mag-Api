@@ -1,9 +1,10 @@
 const { GraphQLString, GraphQLObjectType } = require("graphql");
 const createHttpError = require("http-errors");
+const { default: mongoose } = require("mongoose");
 const { VerifyAccessTokenInGraphQL } = require("../../http/middlewares/verifyAccessToken");
 const { BlogModel } = require("../../models/blog.model");
+const { CopyObject } = require("../../utils/functions");
 const { ResponseType } = require("../typeDefs/public.type");
-const { checkExistBlog } = require("../utils");
 
 const CreateCommentForBlog = {
     type: ResponseType,
@@ -16,11 +17,19 @@ const CreateCommentForBlog = {
         const { req } = context;
         const user = await VerifyAccessTokenInGraphQL(req)
         const { comment, blogID, parent } = args;
-        await checkExistBlog(blogID)
+        await CheckExistBlog(blogID)
+        let CommentDoc;
+        if (parent && mongoose.isValidObjectId(parent)) {
+            CommentDoc = await GetComment(BlogModel, parent)
+        }
         await BlogModel.updateOne({ _id: blogID }, {
             $push: {
                 comments: {
-                    comment, user: user._id, show: false, openToComment: !parent
+                    comment,
+                    user: user._id,
+                    show: false,
+                    openToComment: !parent,
+                    parent: mongoose.isValidObjectId(parent) ? parent : undefined
                 }
             }
         })
@@ -31,6 +40,13 @@ const CreateCommentForBlog = {
             }
         }
     }
+}
+
+async function GetComment(model, id){
+    const FoundComment =  await model.findOne({"comments._id": id},  {"comments.$" : 1});
+    const comment = CopyObject(FoundComment)
+    if(!comment?.comments?.[0]) throw createHttpError.NotFound("No Comment was Found")
+    return comment?.comments?.[0]
 }
 
 async function CheckExistBlog(id) {

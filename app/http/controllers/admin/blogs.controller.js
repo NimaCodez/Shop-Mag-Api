@@ -15,6 +15,7 @@ class BlogController extends Controller {
             const image = req.body.image;
             const author = req.user._id;
             const CreateResult = await BlogModel.create({ author, title, short_text, text, image, category, tags })
+            if (!CreateResult) throw createHttpError.InternalServerError("Blog was not created")
             return res.json({
                 status: 200,
                 success: true,

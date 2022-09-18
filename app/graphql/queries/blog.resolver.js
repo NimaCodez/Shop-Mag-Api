@@ -10,7 +10,7 @@ const BlogResolver = {
     resolve: async (_, args) => {
         const { category } = args
         const findQuery = category ? { category } : {}
-        return await BlogModel.find(findQuery).populate([{ path: "author" }, { path: "category" }]);
+        return await BlogModel.find(findQuery).populate([{ path: "author" }, { path: "category" }, { path: "comments.user"} ]);
     }
 }
 

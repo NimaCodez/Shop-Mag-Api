@@ -6,6 +6,9 @@ const CommentAnswerType = new GraphQLObjectType({
     fields: {
         user: { type: UserType },
         comment: { type: GraphQLString },
+        openToComment: { type: GraphQLBoolean },
+        show: { type: GraphQLBoolean },
+        createdAt: { type: GraphQLString }
     }
 })
 
@@ -17,6 +20,7 @@ const CommentType = new GraphQLObjectType({
         parent: { type: CommentAnswerType },
         show: { type: GraphQLBoolean },
         openToComment: { type: GraphQLBoolean },
+        createdAt: { type: GraphQLString }
     }
 })
 
